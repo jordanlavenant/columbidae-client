@@ -6,6 +6,20 @@ export type PostUpdate = {
     id: string
     title: string
     content: string
-    authorId: string
+    Author: {
+      id: string
+      name: string
+      email: string
+    }
+    Comments: {
+      id: string
+      comment: string
+      postId: string
+      Author: {
+        id: string
+        name: string
+        email: string
+      }
+    }[]
   }
 }

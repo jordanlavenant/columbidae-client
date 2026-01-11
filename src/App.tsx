@@ -7,6 +7,7 @@ import {
   type PostEvent,
 } from './services/post/models/post-event'
 import fetchPosts from './services/post/fetch-post'
+import Post from './components/Post/Post'
 
 const App = () => {
   const ENDPOINT = import.meta.env.VITE_API_ENDPOINT
@@ -20,7 +21,21 @@ const App = () => {
       id: string
       title: string
       content: string
-      authorId: string
+      Author: {
+        id: string
+        name: string
+        email: string
+      }
+      Comments: {
+        id: string
+        comment: string
+        postId: string
+        Author: {
+          id: string
+          name: string
+          email: string
+        }
+      }[]
     }[]
   >([])
 
@@ -65,16 +80,14 @@ const App = () => {
     return () => eventSource.close()
   }, [ENDPOINT, setPosts])
 
+  console.log(posts)
+
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <section className="p-4">
         {posts.length === 0 && <p>No posts available.</p>}
         {posts.map((post) => (
-          <div key={post.id} className="mb-4 p-2 border rounded">
-            <h2 className="text-xl font-bold mb-2">{post.title}</h2>
-            <p className="mb-2">{post.content}</p>
-            <p className="text-sm text-gray-500">Author ID: {post.authorId}</p>
-          </div>
+          <Post post={post} key={post.id} />
         ))}
       </section>
     </ThemeProvider>
