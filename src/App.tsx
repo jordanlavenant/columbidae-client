@@ -39,6 +39,7 @@ const App = () => {
         return
       }
       if (event.type === PostEventType.PostUpdate) {
+        // ! DEBUG LOGGING
         console.log('success')
         console.log(event)
         setPosts((prevPosts) => {
