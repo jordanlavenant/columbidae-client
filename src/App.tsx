@@ -1,13 +1,7 @@
 import './App.css'
-import { ThemeProvider } from '@/components/theme-provider'
-import { useEffect, useState } from 'react'
-import subscribePostEvents from './services/post/subscribe-post-events'
-import {
-  PostEventType,
-  type PostEvent,
-} from './services/post/models/post-event'
-import fetchPosts from './services/post/fetch-post'
-import Post from './components/Post/Post'
+import { ThemeProvider } from './components/theme-provider'
+import { EndpointProvider } from './hooks/use-endpoint'
+import Router from './Router'
 
 const App = () => {
   const ENDPOINT = import.meta.env.VITE_API_ENDPOINT
@@ -16,80 +10,11 @@ const App = () => {
     throw new Error('ENDPOINT is not defined')
   }
 
-  const [posts, setPosts] = useState<
-    {
-      id: string
-      title: string
-      content: string
-      Author: {
-        id: string
-        name: string
-        email: string
-      }
-      Comments: {
-        id: string
-        comment: string
-        postId: string
-        Author: {
-          id: string
-          name: string
-          email: string
-        }
-      }[]
-    }[]
-  >([])
-
-  useEffect(() => {
-    try {
-      fetchPosts(ENDPOINT).then(setPosts)
-    } catch (error) {
-      console.error(error)
-    }
-    const eventSource = subscribePostEvents(ENDPOINT)
-    eventSource.onmessage = (msg: MessageEvent) => {
-      const event: PostEvent = JSON.parse(msg.data)
-      if (event.type === 'Error') {
-        console.log('error')
-        console.error(event.message)
-        return
-      }
-      if (event.type === PostEventType.PostUpdate) {
-        // ! DEBUG LOGGING
-        console.log('success')
-        console.log(event)
-        setPosts((prevPosts) => {
-          const existingPostIndex = prevPosts.findIndex(
-            (post) => post.id === event.post.id
-          )
-          if (existingPostIndex !== -1) {
-            // Update existing post
-            const updatedPosts = [...prevPosts]
-            updatedPosts[existingPostIndex] = event.post
-            return updatedPosts
-          } else {
-            // Add new post
-            return [...prevPosts, event.post]
-          }
-        })
-      }
-    }
-    eventSource.onerror = (err) => {
-      console.error(err)
-      eventSource.close()
-    }
-    return () => eventSource.close()
-  }, [ENDPOINT, setPosts])
-
-  console.log(posts)
-
   return (
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <section className="p-4">
-        {posts.length === 0 && <p>No posts available.</p>}
-        {posts.map((post) => (
-          <Post post={post} key={post.id} />
-        ))}
-      </section>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <EndpointProvider endpoint={ENDPOINT}>
+        <Router />
+      </EndpointProvider>
     </ThemeProvider>
   )
 }
