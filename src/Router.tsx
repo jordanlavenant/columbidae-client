@@ -7,11 +7,11 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  // TODO: implement useAuth() hook and redirect to login if not authenticated @jordanlavenant
+  // TODO: implement useAuth() hook and redirect to login if not authenticated @jordanlavenant @tacostroisviandes
   // TODO: interact with backend to verify auth status
 
   // Placeholder for future authentication logic
-  return children
+  return <>{children}</>
 }
 
 const Router = () => {
@@ -19,14 +19,18 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         {/* Feed page */}
-        <ProtectedRoute>
-          <Route path="/" element={<FeedPage />} />
-        </ProtectedRoute>
+        <Route path="/" element={
+          <ProtectedRoute>
+            <FeedPage />
+          </ProtectedRoute>
+        } />
 
         {/* User page */}
-        <ProtectedRoute>
-          <Route path="/:username/" element={<UserPage />} />
-        </ProtectedRoute>
+        <Route path="/:username/" element={
+          <ProtectedRoute>
+            <UserPage />
+          </ProtectedRoute>
+        } />
 
         {/* Post page */}
         <Route path="/p/:id/" element={<PostPage />} />
@@ -35,7 +39,7 @@ const Router = () => {
         <Route path="/login" element={<LoginPage />} />
 
         {/* Register page */}
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/register" element={<RegisterPage />} /> 
       </Routes>
     </BrowserRouter>
   )
