@@ -1,5 +1,6 @@
 import './App.css'
 import { ThemeProvider } from './components/theme-provider'
+import { AuthProvider } from './hooks/use-auth'
 import { EndpointProvider } from './hooks/use-endpoint'
 import Router from './Router'
 
@@ -13,7 +14,9 @@ const App = () => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <EndpointProvider endpoint={ENDPOINT}>
-        <Router />
+        <AuthProvider>
+          <Router />
+        </AuthProvider>
       </EndpointProvider>
     </ThemeProvider>
   )
