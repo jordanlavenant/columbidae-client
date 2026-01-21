@@ -1,17 +1,25 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import FeedPage from './pages/FeedPage'
 import UserPage from './pages/UserPage'
 import PostPage from './pages/PostPage'
 import type { ReactNode } from 'react'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import { useAuth } from './hooks/use-auth'
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  // TODO: implement useAuth() hook and redirect to login if not authenticated @jordanlavenant @tacostroisviandes
-  // TODO: interact with backend to verify auth status
+  const { isAuthenticated, isLoading } = useAuth()
 
-  // Placeholder for future authentication logic
-  return <>{children}</>
+  if (isLoading) {
+    // TODO: skeleton loader
+    return <div>Loading...</div>
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+
+  return children
 }
 
 const Router = () => {
@@ -19,27 +27,40 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         {/* Feed page */}
-        <Route path="/" element={
-          <ProtectedRoute>
-            <FeedPage />
-          </ProtectedRoute>
-        } />
-
-        {/* User page */}
-        <Route path="/:username/" element={
-          <ProtectedRoute>
-            <UserPage />
-          </ProtectedRoute>
-        } />
-
-        {/* Post page */}
-        <Route path="/p/:id/" element={<PostPage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <FeedPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Login page */}
         <Route path="/login" element={<LoginPage />} />
 
         {/* Register page */}
-        <Route path="/register" element={<RegisterPage />} /> 
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* User page */}
+        <Route
+          path="/:username/"
+          element={
+            <ProtectedRoute>
+              <UserPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Post page */}
+        <Route
+          path="/p/:id/"
+          element={
+            <ProtectedRoute>
+              <PostPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )

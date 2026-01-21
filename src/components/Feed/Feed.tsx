@@ -7,8 +7,12 @@ import subscribePostEvents from '@/services/post/subscribe-post-events'
 import { useEffect, useState } from 'react'
 import Post from '../Post/Post'
 import { useEndpoint } from '@/hooks/use-endpoint'
+import { Button } from '../ui/button'
+import { useAuth } from '@/hooks/use-auth'
 
 const Feed = () => {
+  const { logout } = useAuth()
+
   const ENDPOINT = useEndpoint()
   const [posts, setPosts] = useState<
     {
@@ -78,6 +82,9 @@ const Feed = () => {
 
   return (
     <section className="p-4">
+      <Button className="mb-4" onClick={logout}>
+        Disconnect
+      </Button>
       {posts.length === 0 && <p>No posts available.</p>}
       {posts.map((post) => (
         <Post post={post} key={post.id} />
