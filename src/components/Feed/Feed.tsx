@@ -9,7 +9,7 @@ import Post from '../Post/Post'
 import { useEndpoint } from '@/hooks/use-endpoint'
 import { Button } from '../ui/button'
 import { useAuth } from '@/hooks/use-auth'
-import AssetUploader from '../AssetUploader/AssetUploader'
+import PostForm from '../PostForm/PostForm'
 
 const Feed = () => {
   const { logout } = useAuth()
@@ -18,8 +18,8 @@ const Feed = () => {
   const [posts, setPosts] = useState<
     {
       id: string
-      title: string
       content: string
+      createdAt: string
       Author: {
         id: string
         name: string
@@ -55,7 +55,7 @@ const Feed = () => {
       if (event.type === PostEventType.PostUpdate) {
         // ! DEBUG LOGGING
         console.log('success')
-        console.log(event)
+        // console.log(event)
         setPosts((prevPosts) => {
           const existingPostIndex = prevPosts.findIndex(
             (post) => post.id === event.post.id
@@ -79,22 +79,20 @@ const Feed = () => {
     return () => eventSource.close()
   }, [ENDPOINT, setPosts])
 
-  console.log(posts)
-
   return (
     <section className="p-4">
-      <AssetUploader
-        onUploadSuccess={(asset) => {
-          console.log('Fichier uploadé:', asset)
-        }}
-      />
-      <Button className="mb-4" onClick={logout}>
-        Disconnect
-      </Button>
+      <section className="flex justify-between mb-4">
+        <PostForm />
+        <Button variant="destructive" onClick={logout}>
+          Disconnect
+        </Button>
+      </section>
       {posts.length === 0 && <p>No posts available.</p>}
-      {posts.map((post) => (
-        <Post post={post} key={post.id} />
-      ))}
+      {posts
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+        .map((post) => (
+          <Post post={post} key={post.id} />
+        ))}
     </section>
   )
 }

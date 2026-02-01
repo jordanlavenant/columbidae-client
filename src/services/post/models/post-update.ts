@@ -4,8 +4,8 @@ export type PostUpdate = {
   type: PostEventType.PostUpdate
   post: {
     id: string
-    title: string
     content: string
+    createdAt: string
     Author: {
       id: string
       name: string
