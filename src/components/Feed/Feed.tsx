@@ -9,6 +9,7 @@ import Post from '../Post/Post'
 import { useEndpoint } from '@/hooks/use-endpoint'
 import { Button } from '../ui/button'
 import { useAuth } from '@/hooks/use-auth'
+import AssetUploader from '../AssetUploader/AssetUploader'
 
 const Feed = () => {
   const { logout } = useAuth()
@@ -82,6 +83,11 @@ const Feed = () => {
 
   return (
     <section className="p-4">
+      <AssetUploader
+        onUploadSuccess={(asset) => {
+          console.log('Fichier uploadé:', asset)
+        }}
+      />
       <Button className="mb-4" onClick={logout}>
         Disconnect
       </Button>
