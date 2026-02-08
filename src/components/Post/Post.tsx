@@ -93,15 +93,13 @@ const Post = ({
             playsInline
             onClick={() => setPaused(true)}
           />
-          {paused ? (
+          {paused && (
             <div
               className="absolute inset-0 sizeb-8 flex justify-center items-center"
               onClick={() => setPaused(false)}
             >
               <Play className="size-16 text-white absolute fill-white" />
             </div>
-          ) : (
-            ''
           )}
 
           <Button
