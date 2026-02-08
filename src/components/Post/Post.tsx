@@ -1,4 +1,4 @@
-import { Volume2, VolumeOff } from 'lucide-react'
+import { Play, Volume2, VolumeOff } from 'lucide-react'
 import { Button } from '../ui/button'
 import {
   Carousel,
@@ -39,6 +39,7 @@ const Post = ({
   }
 }) => {
   const [muted, setMuted] = useState(true)
+  const [paused, setPaused] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   // Auto play/pause video based on visibility
@@ -49,7 +50,7 @@ const Post = ({
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && !paused) {
             video.play().catch(() => {})
           } else {
             video.pause()
@@ -66,7 +67,7 @@ const Post = ({
     return () => {
       observer.disconnect()
     }
-  }, [])
+  }, [paused])
 
   const hasAssets = post.Assets && post.Assets.length > 0
   const hasMultipleAssets = post.Assets && post.Assets.length > 1
@@ -90,7 +91,19 @@ const Post = ({
             loop
             muted={muted}
             playsInline
+            onClick={() => setPaused(true)}
           />
+          {paused ? (
+            <div
+              className="absolute inset-0 sizeb-8 flex justify-center items-center"
+              onClick={() => setPaused(false)}
+            >
+              <Play className="size-16 text-white absolute fill-white" />
+            </div>
+          ) : (
+            ''
+          )}
+
           <Button
             variant="default"
             className="absolute bottom-2 right-2 size-8 rounded-full bg-card/70 hover:bg-card/90 hover:cursor-pointer"
