@@ -83,11 +83,11 @@ const Post = ({
       )
     } else if (asset.mimeType.startsWith('video/')) {
       return (
-        <div className="relative">
+        <div className="relative w-full max-h-[85vh] bg-black flex items-center justify-center">
           <video
             ref={videoRef}
             src={asset.url}
-            className="w-full h-full object-cover"
+            className="max-h-[85vh] w-auto object-contain"
             loop
             muted={muted}
             playsInline
@@ -127,6 +127,7 @@ const Post = ({
       {/* Header */}
       <div className="p-4 pb-3">
         <div className="flex items-center gap-3">
+          {/* TODO : Implement profile image */}
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">
             {post.Author.name.charAt(0).toUpperCase()}
           </div>
