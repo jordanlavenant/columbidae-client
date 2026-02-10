@@ -91,16 +91,16 @@ const Post = ({
             loop
             muted={muted}
             playsInline
-            onClick={() => setPaused(true)}
           />
-          {paused && (
-            <div
-              className="absolute inset-0 sizeb-8 flex justify-center items-center"
-              onClick={() => setPaused(false)}
-            >
+          {/* Clickable Play/Pause div */}
+          <div
+            className="absolute inset-0 sizeb-8 flex justify-center items-center"
+            onClick={() => setPaused(!paused)}
+          >
+            {paused && (
               <Play className="size-16 text-white absolute fill-white" />
-            </div>
-          )}
+            )}
+          </div>
 
           <Button
             variant="default"
@@ -150,7 +150,7 @@ const Post = ({
               <CarouselContent>
                 {post.Assets!.map((asset) => (
                   <CarouselItem key={asset.id}>
-                    <div className="w-full aspect-square bg-gray-100">
+                    <div className="w-full bg-gray-100">
                       {renderMedia(asset)}
                     </div>
                   </CarouselItem>
