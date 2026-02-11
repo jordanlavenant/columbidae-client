@@ -8,6 +8,7 @@ import {
   CarouselPrevious,
 } from '../ui/carousel'
 import { useState, useRef, useEffect } from 'react'
+import RourouSelector from './RourouSelector/RourouSelector'
 
 const Post = ({
   post,
@@ -166,6 +167,9 @@ const Post = ({
           )}
         </div>
       )}
+
+      {/* Actions */}
+      <RourouSelector />
 
       {/* Comments */}
       {post.Comments.length > 0 && (
