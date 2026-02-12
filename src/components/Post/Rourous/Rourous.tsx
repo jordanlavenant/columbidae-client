@@ -1,6 +1,6 @@
 import { ALL_ROUROU_TYPES } from '@/constants/rourou.consts'
 
-const RourouSelector = () => {
+const Rourous = () => {
   return (
     <div>
       <p>Rourou Selector</p>
@@ -16,4 +16,4 @@ const RourouSelector = () => {
   )
 }
 
-export default RourouSelector
+export default Rourous

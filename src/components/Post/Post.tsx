@@ -8,7 +8,8 @@ import {
   CarouselPrevious,
 } from '../ui/carousel'
 import { useState, useRef, useEffect } from 'react'
-import RourouSelector from './RourouSelector/RourouSelector'
+import Rourous from './Rourous/Rourous'
+import { Separator } from '@radix-ui/react-separator'
 
 const Post = ({
   post,
@@ -169,7 +170,10 @@ const Post = ({
       )}
 
       {/* Actions */}
-      <RourouSelector />
+      {!hasAssets && <Separator />}
+      <div className="px-4 py-3">
+        <Rourous />
+      </div>
 
       {/* Comments */}
       {post.Comments.length > 0 && (
