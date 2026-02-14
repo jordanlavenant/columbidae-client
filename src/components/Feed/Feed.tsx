@@ -35,6 +35,17 @@ const Feed = () => {
           email: string
         }
       }[]
+      Reacts: {
+        id: string
+        name: string
+        createdAt: string
+        postId: string
+        Author: {
+          id: string
+          name: string
+          email: string
+        }
+      }[]
     }[]
   >([])
 
@@ -55,7 +66,7 @@ const Feed = () => {
       if (event.type === PostEventType.PostUpdate) {
         // ! DEBUG LOGGING
         console.log('success')
-        // console.log(event)
+        console.log(event)
         setPosts((prevPosts) => {
           const existingPostIndex = prevPosts.findIndex(
             (post) => post.id === event.post.id

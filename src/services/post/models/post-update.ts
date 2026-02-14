@@ -21,5 +21,16 @@ export type PostUpdate = {
         email: string
       }
     }[]
+    Reacts: {
+      id: string
+      name: string
+      createdAt: string
+      postId: string
+      Author: {
+        id: string
+        name: string
+        email: string
+      }
+    }[]
   }
 }

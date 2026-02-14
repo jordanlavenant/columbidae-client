@@ -38,6 +38,17 @@ const Post = ({
         email: string
       }
     }[]
+    Reacts: {
+      id: string
+      name: string
+      createdAt: string
+      postId: string
+      Author: {
+        id: string
+        name: string
+        email: string
+      }
+    }[]
   }
 }) => {
   const [muted, setMuted] = useState(true)
@@ -172,7 +183,7 @@ const Post = ({
       {/* Actions */}
       {!hasAssets && <Separator />}
       <div className="px-4 py-3">
-        <Rourous />
+        <Rourous rourous={post.Reacts} />
       </div>
 
       {/* Comments */}
