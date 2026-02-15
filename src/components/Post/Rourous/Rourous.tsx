@@ -1,6 +1,11 @@
 import { CirclePlus } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
 import { ALL_ROUROU_TYPES, ROUROU_TYPES } from '@/constants/rourou.consts'
 import { useAuth } from '@/hooks/use-auth'
 
@@ -54,8 +59,7 @@ const Rourous = ({ rourous }: RourousProps) => {
   )
 
   return (
-    <div className="flex">
-      <p>Rourou Selector</p>
+    <div className="flex items-center gap-1">
       {!hasNoRourou && (
         <div className="flex gap-2 p-1 border-1 border-solid inset-shadow-sm rounded-full w-fit">
           {ALL_ROUROU_TYPES.map((rourouType) => {
@@ -85,7 +89,20 @@ const Rourous = ({ rourous }: RourousProps) => {
           })}
         </div>
       )}
-      <CirclePlus className="hover:cursor-pointer" />
+      <HoverCard openDelay={10} closeDelay={100}>
+        <HoverCardTrigger asChild>
+          <CirclePlus className="hover:cursor-pointer" />
+        </HoverCardTrigger>
+        <HoverCardContent className="flex gap-0.5">
+          {ALL_ROUROU_TYPES.map((rourouType) => (
+            <img
+              src={`./rourou_icons/${rourouType}.png`}
+              alt={rourouType}
+              className="h-[1.5em]"
+            />
+          ))}
+        </HoverCardContent>
+      </HoverCard>
     </div>
   )
 }
