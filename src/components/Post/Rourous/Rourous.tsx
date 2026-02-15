@@ -1,6 +1,8 @@
-import { useMemo } from 'react'
+import { CirclePlus } from 'lucide-react'
+import { useCallback, useMemo } from 'react'
 
-import { ALL_ROUROU_TYPES } from '@/constants/rourou.consts'
+import { ALL_ROUROU_TYPES, ROUROU_TYPES } from '@/constants/rourou.consts'
+import { useAuth } from '@/hooks/use-auth'
 
 interface RourousProps {
   rourous: {
@@ -9,7 +11,7 @@ interface RourousProps {
     createdAt: string
     postId: string
     Author: {
-      id: string
+      id: string | undefined
       name: string
       email: string
     }
@@ -17,6 +19,8 @@ interface RourousProps {
 }
 
 const Rourous = ({ rourous }: RourousProps) => {
+  const { currentUser } = useAuth()
+
   const rourouGroups: Record<string, number> = useMemo(() => {
     const groupedRourous = Object.fromEntries(
       ALL_ROUROU_TYPES.map((type) => [type, 0])
@@ -38,20 +42,37 @@ const Rourous = ({ rourous }: RourousProps) => {
     return true
   }, [rourous])
 
+  const isRourouSelectedByUser = useCallback(
+    (rourouType: ROUROU_TYPES) => {
+      return rourous.some(
+        (oneRourou) =>
+          oneRourou.name === rourouType &&
+          oneRourou.Author.id === currentUser?.id
+      )
+    },
+    [rourous, currentUser?.id]
+  )
+
   return (
-    <div>
+    <div className="flex">
       <p>Rourou Selector</p>
       {!hasNoRourou && (
-        <div className="flex gap-2 p-1 border-1 border-solid rounded-full w-fit">
+        <div className="flex gap-2 p-1 border-1 border-solid inset-shadow-sm rounded-full w-fit">
           {ALL_ROUROU_TYPES.map((rourouType) => {
             const count = rourouGroups[rourouType]
 
             if (count === 0) return null
 
+            const isSelected = isRourouSelectedByUser(rourouType)
+
             return (
               <div
                 key={rourouType}
-                className="flex items-center gap-2 h-[1.5em]"
+                className={`flex items-center gap-2 ${
+                  isSelected
+                    ? 'bg-emerald-950 border border-green-800 p-1 rounded-full'
+                    : ''
+                }`}
               >
                 <img
                   src={`./rourou_icons/${rourouType}.png`}
@@ -64,6 +85,7 @@ const Rourous = ({ rourous }: RourousProps) => {
           })}
         </div>
       )}
+      <CirclePlus className="hover:cursor-pointer" />
     </div>
   )
 }
