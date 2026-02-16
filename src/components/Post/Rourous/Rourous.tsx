@@ -1,10 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import {
-  ALL_ROUROU_TYPES,
-  FRENCH_ROUROU_LABELS,
-  ROUROU_TYPES,
-} from '@/constants/rourou.consts'
+import { ALL_ROUROU_TYPES, ROUROU_TYPES } from '@/constants/rourou.consts'
 import { useAuth } from '@/hooks/use-auth'
 import { useEndpoint } from '@/hooks/use-endpoint'
 import RourouSelector from './RourouSelector/RourouSelector'
