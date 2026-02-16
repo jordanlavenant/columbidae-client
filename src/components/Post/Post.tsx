@@ -183,7 +183,7 @@ const Post = ({
       {/* Actions */}
       {!hasAssets && <Separator />}
       <div className="px-4 py-3">
-        <Rourous rourous={post.Reacts} />
+        <Rourous postId={post.id} rourous={post.Reacts} />
       </div>
 
       {/* Comments */}

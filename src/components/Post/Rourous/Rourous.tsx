@@ -1,15 +1,16 @@
-import { CirclePlus } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
-import { ALL_ROUROU_TYPES, ROUROU_TYPES } from '@/constants/rourou.consts'
+  ALL_ROUROU_TYPES,
+  FRENCH_ROUROU_LABELS,
+  ROUROU_TYPES,
+} from '@/constants/rourou.consts'
 import { useAuth } from '@/hooks/use-auth'
+import { useEndpoint } from '@/hooks/use-endpoint'
+import RourouSelector from './RourouSelector/RourouSelector'
 
 interface RourousProps {
+  postId: string
   rourous: {
     id: string
     name: string
@@ -23,8 +24,9 @@ interface RourousProps {
   }[]
 }
 
-const Rourous = ({ rourous }: RourousProps) => {
+const Rourous = ({ postId, rourous }: RourousProps) => {
   const { currentUser } = useAuth()
+  const endpoint = useEndpoint()
 
   const rourouGroups: Record<string, number> = useMemo(() => {
     const groupedRourous = Object.fromEntries(
@@ -58,6 +60,27 @@ const Rourous = ({ rourous }: RourousProps) => {
     [rourous, currentUser?.id]
   )
 
+  const handleRourouSelect = async (selectedRourou: ROUROU_TYPES) => {
+    try {
+      const postRourouResponse = await fetch(`${endpoint}/api/rourous`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          authorId: currentUser!.id,
+          postId,
+          rourouName: selectedRourou,
+        }),
+      })
+
+      if (!postRourouResponse.ok) {
+        throw new Error("Erreur lors de l'envoi du Rourou")
+      }
+    } catch (err) {
+      console.error('Submit error:', err)
+    }
+  }
+
   return (
     <div className="flex items-center gap-1">
       {!hasNoRourou && (
@@ -89,20 +112,7 @@ const Rourous = ({ rourous }: RourousProps) => {
           })}
         </div>
       )}
-      <HoverCard openDelay={10} closeDelay={100}>
-        <HoverCardTrigger asChild>
-          <CirclePlus className="hover:cursor-pointer" />
-        </HoverCardTrigger>
-        <HoverCardContent className="flex gap-0.5">
-          {ALL_ROUROU_TYPES.map((rourouType) => (
-            <img
-              src={`./rourou_icons/${rourouType}.png`}
-              alt={rourouType}
-              className="h-[1.5em]"
-            />
-          ))}
-        </HoverCardContent>
-      </HoverCard>
+      <RourouSelector onRourouSelect={handleRourouSelect} />
     </div>
   )
 }
