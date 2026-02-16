@@ -1,3 +1,5 @@
+import type { Post } from '../../models/post/post'
+
 const ROUTE = '/api/posts'
 
 /**
@@ -5,9 +7,9 @@ const ROUTE = '/api/posts'
  *
  * Sends a GET request to the server to fetch the posts.
  *
- * @returns {Promise<[]>} A promise of future post data
+ * @returns {Promise<Post[]>} A promise of future post data
  */
-export default function fetchPosts(endpoint: string): Promise<[]> {
+export default function fetchPosts(endpoint: string): Promise<Post[]> {
   return fetch(endpoint + ROUTE, { method: 'GET' }).then((res) => {
     if (res.ok) {
       return res.json()

@@ -1,7 +1,7 @@
 import UserProfile from '@/components/User/User'
 import { useEndpoint } from '@/hooks/use-endpoint'
-import fetchUser from '@/services/user/fetch-user'
-import type { User } from '@/services/user/models/user'
+import fetchUser from '@/services/functions/user/fetch-user'
+import type { User } from '@/services/models/user/user'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 

@@ -1,4 +1,4 @@
-const ROUTE = '/users'
+const ROUTE = '/api/users'
 
 /**
  * Post a user to create it.

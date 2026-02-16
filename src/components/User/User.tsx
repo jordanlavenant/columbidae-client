@@ -1,20 +1,22 @@
-import type { User } from '@/services/user/models/user'
+import type { User } from '@/services/models/user/user'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import type { Post } from '@/services/post/models/post'
+import type { Post } from '@/services/models/post/post'
 import PostComponent from '../Post/Post'
 import { useAuth } from '@/hooks/use-auth'
 import { useEndpoint } from '@/hooks/use-endpoint'
-import createFollow from '@/services/follow/create-follow'
-import deleteFollow from '@/services/follow/delete-follow'
+import createFollow from '@/services/functions/follow/create-follow'
+import deleteFollow from '@/services/functions/follow/delete-follow'
 import { cn, getInitials } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 import FollowersDialog from './components/FollowersDialog'
 import FollowingDialog from './components/FollowingDialog'
+import { useNavigate } from 'react-router-dom'
 
 const UserProfile = ({ user }: { user: User }) => {
   const ENDPOINT = useEndpoint()
+  const navigate = useNavigate()
   const { currentUser } = useAuth()
   const [isFollowing, setIsFollowing] = useState(false)
   const currentUserId = currentUser?.id
@@ -65,7 +67,11 @@ const UserProfile = ({ user }: { user: User }) => {
         <div className="flex items-start gap-4">
           {/* Avatar */}
           <Avatar className="size-24 sm:size-36">
-            <AvatarImage src={user.Avatar?.url} alt={user.name} />
+            <AvatarImage
+              src={user.Avatar?.url}
+              alt={user.name}
+              className="object-cover"
+            />
             <AvatarFallback className="text-2xl sm:text-4xl font-mono">
               {getInitials(user.name)}
             </AvatarFallback>
@@ -100,6 +106,7 @@ const UserProfile = ({ user }: { user: User }) => {
             <Button
               variant="outline"
               className="text-white hover:cursor-pointer font-semibold"
+              onClick={() => navigate('/account/edit')}
             >
               Modifier le profil
             </Button>

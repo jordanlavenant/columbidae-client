@@ -6,6 +6,7 @@ import type { ReactNode } from 'react'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import { useAuth } from './hooks/use-auth'
+import AccountEditPage from './pages/AccountEditPage'
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -48,6 +49,16 @@ const Router = () => {
           element={
             <ProtectedRoute>
               <UserPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Account edit */}
+        <Route
+          path="/account/edit"
+          element={
+            <ProtectedRoute>
+              <AccountEditPage />
             </ProtectedRoute>
           }
         />

@@ -1,3 +1,5 @@
+import type { User } from '../../models/user/user'
+
 const ROUTE = '/api/users'
 
 /**
@@ -5,12 +7,12 @@ const ROUTE = '/api/users'
  *
  * Sends a GET request to the server to fetch the user.
  *
- * @returns {Promise<any>} A promise of future user data
+ * @returns {Promise<User>} A promise of future user data
  */
 export default function fetchUser(
   endpoint: string,
   username: string
-): Promise<any> {
+): Promise<User> {
   return fetch(endpoint + ROUTE + '/' + username, {
     method: 'GET',
   }).then((res) => {

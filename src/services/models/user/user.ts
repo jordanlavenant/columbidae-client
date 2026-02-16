@@ -1,4 +1,4 @@
-import type { Post } from '@/services/post/models/post'
+import type { Post } from '@/services/models/post/post'
 
 export type User = {
   id: string

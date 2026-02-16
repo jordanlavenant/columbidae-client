@@ -10,8 +10,11 @@ import {
 import { useState, useRef, useEffect } from 'react'
 import Rourous from './Rourous/Rourous'
 import { Separator } from '@radix-ui/react-separator'
-import type { Post } from '@/services/post/models/post'
+import type { Post } from '@/services/models/post/post'
 import { useNavigate } from 'react-router-dom'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { getInitials } from '@/lib/utils'
+import { formatTimeDifference } from '@/lib/time'
 
 const PostComponent = ({ post }: { post: Post }) => {
   const navigate = useNavigate()
@@ -55,7 +58,7 @@ const PostComponent = ({ post }: { post: Post }) => {
         <img
           src={asset.url}
           alt="Post asset"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover rounded-xl"
         />
       )
     } else if (asset.mimeType.startsWith('video/')) {
@@ -97,28 +100,38 @@ const PostComponent = ({ post }: { post: Post }) => {
   }
 
   return (
-    <div
-      key={post.id}
-      className="mb-4 border rounded-lg overflow-hidden shadow-sm"
-    >
+    <div key={post.id} className="mb-4 overflow-hidden shadow-sm border-b">
       {/* Header */}
       <div
         className="p-4 pb-3 hover:cursor-pointer"
         onClick={() => navigate(`/${post.Author.username}`)}
       >
         <div className="flex items-center gap-3">
-          {/* TODO : Implement profile image */}
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">
-            {post.Author.name.charAt(0).toUpperCase()}
-          </div>
-          <div>
+          {/* Avatar */}
+          <Avatar className="size-8">
+            <AvatarImage
+              src={post.Author.Avatar?.url}
+              alt={post.Author.name}
+              className="object-cover"
+            />
+            <AvatarFallback className="text-md font-mono">
+              {getInitials(post.Author.name)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex items-center gap-x-2">
             <p className="font-semibold text-sm">{post.Author.username}</p>
+            <p className="text-sm text-muted-foreground">
+              {formatTimeDifference(post.createdAt)}
+            </p>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="px-4 pb-3">
+      <div
+        className="px-4 pb-3 hover:cursor-pointer"
+        onClick={() => navigate(`/p/${post.id}`)}
+      >
         <p className="text-sm whitespace-pre-wrap">{post.content}</p>
       </div>
 
@@ -130,9 +143,7 @@ const PostComponent = ({ post }: { post: Post }) => {
               <CarouselContent>
                 {post.Assets!.map((asset) => (
                   <CarouselItem key={asset.id}>
-                    <div className="w-full bg-gray-100">
-                      {renderMedia(asset)}
-                    </div>
+                    <div className="w-full">{renderMedia(asset)}</div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
@@ -140,7 +151,7 @@ const PostComponent = ({ post }: { post: Post }) => {
               <CarouselNext className="right-2" />
             </Carousel>
           ) : (
-            <div className="w-full aspect-square bg-gray-100">
+            <div className="w-full aspect-square">
               {renderMedia(post.Assets![0])}
             </div>
           )}

@@ -1,3 +1,7 @@
+import login, { type LoginPayload } from './functions/auth/login'
+
+const ENDPOINT = import.meta.env.VITE_API_ENDPOINT
+
 interface LoginResponse {
   access_token: string
   user: {
@@ -10,14 +14,9 @@ interface LoginResponse {
 
 export const authService = {
   async login(email: string, password: string): Promise<LoginResponse> {
-    // TODO: Replace with actual API endpoint
-    const response = await fetch(`http://localhost:3000/api/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    })
+    // Login
+    const payload: LoginPayload = { email, password }
+    const response = await login(ENDPOINT, payload)
 
     if (!response.ok) {
       const error = await response.json()

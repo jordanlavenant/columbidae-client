@@ -13,6 +13,9 @@ import { Button } from '../ui/button'
 import AssetUploader from '../AssetUploader/AssetUploader'
 import { useEndpoint } from '@/hooks/use-endpoint'
 import { useAuth } from '@/hooks/use-auth'
+import type { CreatePostPayload } from '@/services/functions/post/create-post'
+import createPost from '@/services/functions/post/create-post'
+import createAsset from '@/services/functions/asset/create-asset'
 
 const PostForm = () => {
   const endpoint = useEndpoint()
@@ -41,11 +44,7 @@ const PostForm = () => {
         formData.append('file', selectedFile)
         formData.append('folder', 'posts')
 
-        const assetResponse = await fetch(`${endpoint}/api/assets/upload`, {
-          method: 'POST',
-          body: formData,
-          credentials: 'include',
-        })
+        const assetResponse = await createAsset(endpoint, formData)
 
         if (!assetResponse.ok) {
           throw new Error("Erreur lors de l'upload du fichier")
@@ -55,17 +54,13 @@ const PostForm = () => {
         assetId = asset.id
       }
 
-      // Créer le post
-      const postResponse = await fetch(`${endpoint}/api/posts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          content,
-          authorId: currentUser!.id,
-          assetIds: assetId ? [assetId] : [],
-        }),
-      })
+      // Create post
+      const payload: CreatePostPayload = {
+        content,
+        authorId: currentUser!.id,
+        assetIds: assetId ? [assetId] : [],
+      }
+      const postResponse = await createPost(endpoint, payload)
 
       if (!postResponse.ok) {
         throw new Error('Erreur lors de la création du post')
@@ -115,6 +110,7 @@ const PostForm = () => {
           <AssetUploader
             onFileSelect={setSelectedFile}
             disabled={isSubmitting}
+            label={'Ajouter une image ou une vidéo'}
           />
         </div>
 

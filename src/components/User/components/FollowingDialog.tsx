@@ -66,6 +66,7 @@ const FollowingDialog = ({ following }: FollowedProps) => {
                   <AvatarImage
                     src={entry.followed.Avatar?.url}
                     alt={entry.followed.name}
+                    className="object-cover"
                   />
                   <AvatarFallback className="text-md font-mono">
                     {getInitials(entry.followed.name)}

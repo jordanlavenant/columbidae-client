@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from 'react'
 import { authService } from '@/services/auth'
-import type { User } from '@/services/user/models/user'
+import type { User } from '@/services/models/user/user'
 
 type AuthContextType = {
   isAuthenticated: boolean

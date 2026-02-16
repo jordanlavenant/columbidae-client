@@ -7,6 +7,9 @@ export type Post = {
     username: string
     name: string
     email: string
+    Avatar: {
+      url: string
+    } | null
   }
   Comments: {
     id: string
@@ -17,6 +20,9 @@ export type Post = {
       username: string
       name: string
       email: string
+      Avatar: {
+        url: string
+      } | null
     }
   }[]
   Reacts: {

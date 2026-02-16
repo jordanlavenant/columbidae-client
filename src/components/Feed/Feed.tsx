@@ -1,16 +1,16 @@
-import fetchPosts from '@/services/post/fetch-posts'
-import {
-  PostEventType,
-  type PostEvent,
-} from '@/services/post/models/post-event'
-import subscribePostEvents from '@/services/post/subscribe-post-events'
+import fetchPosts from '@/services/functions/post/fetch-posts'
+import subscribePostEvents from '@/services/events/post/subscribe-post-events'
 import { useEffect, useState } from 'react'
 import { useEndpoint } from '@/hooks/use-endpoint'
 import { Button } from '../ui/button'
 import { useAuth } from '@/hooks/use-auth'
 import PostForm from '../PostForm/PostForm'
-import type { Post } from '@/services/post/models/post'
+import type { Post } from '@/services/models/post/post'
 import PostComponent from '../Post/Post'
+import {
+  PostEventType,
+  type PostEvent,
+} from '@/services/events/post/post-event'
 
 const Feed = () => {
   const { logout } = useAuth()
@@ -33,9 +33,6 @@ const Feed = () => {
         return
       }
       if (event.type === PostEventType.PostUpdate) {
-        // ! DEBUG LOGGING
-        console.log('success')
-        console.log(event)
         setPosts((prevPosts) => {
           const existingPostIndex = prevPosts.findIndex(
             (post) => post.id === event.post.id
@@ -68,7 +65,7 @@ const Feed = () => {
         </Button>
       </section>
       {posts.length === 0 && <p>No posts available.</p>}
-      <section className="mx-auto max-w-2xl">
+      <section className="mx-auto max-w-md">
         {posts
           .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
           .map((post) => (
