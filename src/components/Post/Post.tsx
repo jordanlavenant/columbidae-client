@@ -173,9 +173,7 @@ const Post = ({
               <CarouselNext className="right-2" />
             </Carousel>
           ) : (
-            <div className="w-full aspect-square bg-gray-100">
-              {renderMedia(post.Assets![0])}
-            </div>
+            <div className="w-full">{renderMedia(post.Assets![0])}</div>
           )}
         </div>
       )}
