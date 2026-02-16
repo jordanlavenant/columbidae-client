@@ -65,7 +65,7 @@ const UserProfile = ({ user }: { user: User }) => {
         <div className="flex items-start gap-4">
           {/* Avatar */}
           <Avatar className="size-24 sm:size-36">
-            <AvatarImage src={''} alt={user.name} />
+            <AvatarImage src={user.Avatar?.url} alt={user.name} />
             <AvatarFallback className="text-2xl sm:text-4xl font-mono">
               {getInitials(user.name)}
             </AvatarFallback>

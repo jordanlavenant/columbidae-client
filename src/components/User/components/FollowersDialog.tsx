@@ -21,6 +21,10 @@ interface FollowerProps {
       id: string
       username: string
       name: string
+      Avatar: {
+        id: string
+        url: string
+      } | null
     }
   }[]
 }
@@ -59,7 +63,10 @@ const FollowersDialog = ({ followers }: FollowerProps) => {
               >
                 {/* Avatar */}
                 <Avatar className="size-12">
-                  <AvatarImage src="" alt={entry.follower.name} />
+                  <AvatarImage
+                    src={entry.follower.Avatar?.url}
+                    alt={entry.follower.name}
+                  />
                   <AvatarFallback className="text-md font-mono">
                     {getInitials(entry.follower.name)}
                   </AvatarFallback>

@@ -18,6 +18,10 @@ export type User = {
       id: string
       username: string
       name: string
+      Avatar: {
+        id: string
+        url: string
+      }
     }
   }[]
   Following: {
@@ -26,6 +30,10 @@ export type User = {
       id: string
       username: string
       name: string
+      Avatar: {
+        id: string
+        url: string
+      }
     }
   }[]
 }

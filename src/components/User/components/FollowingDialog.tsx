@@ -21,6 +21,10 @@ interface FollowedProps {
       id: string
       username: string
       name: string
+      Avatar: {
+        id: string
+        url: string
+      } | null
     }
   }[]
 }
@@ -59,7 +63,10 @@ const FollowingDialog = ({ following }: FollowedProps) => {
               >
                 {/* Avatar */}
                 <Avatar className="size-12">
-                  <AvatarImage src="" alt={entry.followed.name} />
+                  <AvatarImage
+                    src={entry.followed.Avatar?.url}
+                    alt={entry.followed.name}
+                  />
                   <AvatarFallback className="text-md font-mono">
                     {getInitials(entry.followed.name)}
                   </AvatarFallback>

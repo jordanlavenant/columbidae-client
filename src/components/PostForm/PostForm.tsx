@@ -11,7 +11,7 @@ import {
 } from '../ui/alert-dialog'
 import { Button } from '../ui/button'
 import AssetUploader from '../AssetUploader/AssetUploader'
-import { useEndpoint } from '../../hooks/use-endpoint'
+import { useEndpoint } from '@/hooks/use-endpoint'
 import { useAuth } from '@/hooks/use-auth'
 
 const PostForm = () => {
