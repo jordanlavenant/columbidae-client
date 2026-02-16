@@ -1,24 +1,23 @@
-const ROUTE = '/users'
+const ROUTE = '/api/follows'
 
 /**
- * Post a user to create it.
+ * Post a follow relationship.
  *
  * @param {string} endpoint The endpoint URL of the API
- * @param {string} id The ID of the new user
+ * @param {string} followerId The ID of the follower
+ * @param {string} followedId The ID of the followed user
  * @returns {Promise<Response>} The fetch response promise
  */
-export default function createUser(
+export default function createFollow(
   endpoint: string,
-  username: string,
-  name: string,
-  email: string
+  followerId: string,
+  followedId: string
 ): Promise<Response> {
   return fetch(endpoint + ROUTE, {
     method: 'POST',
     body: JSON.stringify({
-      username,
-      name,
-      email,
+      followerId,
+      followedId,
     }),
     headers: {
       'Content-Type': 'application/json',

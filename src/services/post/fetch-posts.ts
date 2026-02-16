@@ -1,4 +1,4 @@
-const URL = '/api/posts'
+const ROUTE = '/api/posts'
 
 /**
  * Fetch the posts.
@@ -8,7 +8,7 @@ const URL = '/api/posts'
  * @returns {Promise<[]>} A promise of future post data
  */
 export default function fetchPosts(endpoint: string): Promise<[]> {
-  return fetch(endpoint + URL, { method: 'GET' }).then((res) => {
+  return fetch(endpoint + ROUTE, { method: 'GET' }).then((res) => {
     if (res.ok) {
       return res.json()
     }

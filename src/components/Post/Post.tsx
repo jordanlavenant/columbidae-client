@@ -10,47 +10,11 @@ import {
 import { useState, useRef, useEffect } from 'react'
 import Rourous from './Rourous/Rourous'
 import { Separator } from '@radix-ui/react-separator'
+import type { Post } from '@/services/post/models/post'
+import { useNavigate } from 'react-router-dom'
 
-const Post = ({
-  post,
-}: {
-  post: {
-    id: string
-    content: string
-    createdAt: string
-    Author: {
-      id: string
-      name: string
-      email: string
-    }
-    Assets?: {
-      id: string
-      url: string
-      mimeType: string
-    }[]
-    Comments: {
-      id: string
-      comment: string
-      postId: string
-      Author: {
-        id: string
-        name: string
-        email: string
-      }
-    }[]
-    Reacts: {
-      id: string
-      name: string
-      createdAt: string
-      postId: string
-      Author: {
-        id: string
-        name: string
-        email: string
-      }
-    }[]
-  }
-}) => {
+const PostComponent = ({ post }: { post: Post }) => {
+  const navigate = useNavigate()
   const [muted, setMuted] = useState(true)
   const [paused, setPaused] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -135,17 +99,20 @@ const Post = ({
   return (
     <div
       key={post.id}
-      className="mb-4 border rounded-lg overflow-hidden bg-card shadow-sm max-w-2xl mx-auto"
+      className="mb-4 border rounded-lg overflow-hidden shadow-sm"
     >
       {/* Header */}
-      <div className="p-4 pb-3">
+      <div
+        className="p-4 pb-3 hover:cursor-pointer"
+        onClick={() => navigate(`/${post.Author.username}`)}
+      >
         <div className="flex items-center gap-3">
           {/* TODO : Implement profile image */}
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">
             {post.Author.name.charAt(0).toUpperCase()}
           </div>
           <div>
-            <p className="font-semibold text-sm">{post.Author.name}</p>
+            <p className="font-semibold text-sm">{post.Author.username}</p>
           </div>
         </div>
       </div>
@@ -206,4 +173,4 @@ const Post = ({
   )
 }
 
-export default Post
+export default PostComponent

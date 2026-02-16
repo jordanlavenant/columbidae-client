@@ -1,11 +1,38 @@
+import UserProfile from '@/components/User/User'
+import { useEndpoint } from '@/hooks/use-endpoint'
+import fetchUser from '@/services/user/fetch-user'
+import type { User } from '@/services/user/models/user'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-
-// TODO: if its our own user page, show edit profile button, settings, etc. (view useAuth in the future ^^)
 
 const UserPage = () => {
   const { username } = useParams()
+  const ENDPOINT = useEndpoint()
 
-  return <div>User Page with username: {username}</div>
+  const [user, setUser] = useState<User | null>(null)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (username) {
+      fetchUser(ENDPOINT, username)
+        .then((data) => {
+          setUser(data)
+          setError('')
+          setLoading(false)
+        })
+        .catch((err: Error) => {
+          setError(err.message)
+          setLoading(false)
+        })
+    }
+  }, [username, ENDPOINT])
+
+  if (loading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
+  if (!user) return <div>User not found</div>
+
+  return <UserProfile user={user} />
 }
 
 export default UserPage

@@ -3,12 +3,14 @@ interface LoginResponse {
   user: {
     id: string
     email: string
+    username: string
     name: string
   }
 }
 
 export const authService = {
   async login(email: string, password: string): Promise<LoginResponse> {
+    // TODO: Replace with actual API endpoint
     const response = await fetch(`http://localhost:3000/api/auth/login`, {
       method: 'POST',
       headers: {
