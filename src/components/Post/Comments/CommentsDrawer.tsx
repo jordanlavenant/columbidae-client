@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Drawer,
@@ -12,18 +11,21 @@ import {
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/use-auth'
 import { useEndpoint } from '@/hooks/use-endpoint'
-import { formatTimeDifference } from '@/lib/time'
 import createComment, {
   type CreateCommentPayload,
 } from '@/services/functions/comment/create-comment'
 import type { Post } from '@/services/models/post/post'
 import { MessageCircle } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
+import Comments from './components/Comments'
+import { cn } from '@/lib/utils'
 
-const Comments = ({
+const CommentsDrawer = ({
+  className,
   postId,
   comments: initialComments,
 }: {
+  className?: string
   postId: string
   comments: Post['Comments']
 }) => {
@@ -69,49 +71,16 @@ const Comments = ({
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <MessageCircle className="hover:cursor-pointer" />
+        <MessageCircle className={cn('hover:cursor-pointer', className)} />
       </DrawerTrigger>
       <DrawerContent className="border h-[500px] max-w-md mx-auto backdrop-blur-sm bg-background/50">
         <DrawerHeader className="border-b">
           <DrawerTitle>Commentaires</DrawerTitle>
           <DrawerDescription />
         </DrawerHeader>
-        <section className="p-2 overflow-y-auto space-y-6 my-4">
-          {comments.length === 0 ? (
-            <p className="mt-8 p-4 text-center text-muted-foreground">
-              Aucun commentaire pour ce post.
-            </p>
-          ) : (
-            comments
-              .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-              .map((entry) => (
-                <div
-                  key={entry.id}
-                  className="flex items-start gap-x-2 relative"
-                >
-                  <Avatar className="size-10">
-                    <AvatarImage
-                      src={entry.Author.Avatar?.url}
-                      alt={entry.Author.name}
-                      className="object-cover"
-                    />
-                    <AvatarFallback className="text-md font-mono">
-                      {entry.Author?.username.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-x-2">
-                      <p className="text-sm">{entry.Author.username}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {formatTimeDifference(entry.createdAt)}
-                      </p>
-                    </div>
-                    <p>{entry.comment}</p>
-                  </div>
-                </div>
-              ))
-          )}
-        </section>
+
+        <Comments comments={comments} />
+
         <DrawerFooter className="border-t">
           <form onSubmit={handleAddComment} className="flex items-center gap-2">
             <Input
@@ -130,4 +99,4 @@ const Comments = ({
   )
 }
 
-export default Comments
+export default CommentsDrawer

@@ -1,4 +1,4 @@
-import { Play, Volume2, VolumeOff } from 'lucide-react'
+import { MessageCircle, Play, Volume2, VolumeOff } from 'lucide-react'
 import { Button } from '../ui/button'
 import {
   Carousel,
@@ -13,11 +13,17 @@ import { Separator } from '@radix-ui/react-separator'
 import type { Post } from '@/services/models/post/post'
 import { useNavigate } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { getInitials } from '@/lib/utils'
+import { cn, getInitials } from '@/lib/utils'
 import { formatTimeDifference } from '@/lib/time'
-import Comments from './Comments/Comments'
+import CommentsDrawer from './Comments/CommentsDrawer'
 
-const PostComponent = ({ post }: { post: Post }) => {
+const PostComponent = ({
+  className,
+  post,
+}: {
+  className?: string
+  post: Post
+}) => {
   const navigate = useNavigate()
   const [muted, setMuted] = useState(true)
   const [paused, setPaused] = useState(false)
@@ -59,7 +65,7 @@ const PostComponent = ({ post }: { post: Post }) => {
         <img
           src={asset.url}
           alt="Post asset"
-          className="w-full h-full object-cover rounded-xl"
+          className="w-full max-h-[85vh] object-contain rounded-xl"
         />
       )
     } else if (asset.mimeType.startsWith('video/')) {
@@ -101,7 +107,7 @@ const PostComponent = ({ post }: { post: Post }) => {
   }
 
   return (
-    <div key={post.id} className="mb-4 overflow-hidden shadow-sm">
+    <div key={post.id} className={cn('overflow-hidden shadow-sm', className)}>
       {/* Header */}
       <div
         className="p-4 pb-3 hover:cursor-pointer"
@@ -152,9 +158,7 @@ const PostComponent = ({ post }: { post: Post }) => {
               <CarouselNext className="right-2" />
             </Carousel>
           ) : (
-            <div className="w-full aspect-square">
-              {renderMedia(post.Assets![0])}
-            </div>
+            <div className="w-full">{renderMedia(post.Assets![0])}</div>
           )}
         </div>
       )}
@@ -163,7 +167,18 @@ const PostComponent = ({ post }: { post: Post }) => {
 
       {/* Footer & Actions */}
       <div className="p-4 flex items-center justify-between">
-        <Comments comments={post.Comments} postId={post.id} />
+        {/* Mobile comments drawer */}
+        <CommentsDrawer
+          className="md:hidden"
+          comments={post.Comments}
+          postId={post.id}
+        />
+        {/* Desktop comments */}
+        <MessageCircle
+          onClick={() => navigate(`/p/${post.id}`)}
+          className="hidden md:block hover:cursor-pointer"
+        />
+        {/* Rourous */}
         <Rourous rourous={post.Reacts} />
       </div>
     </div>
