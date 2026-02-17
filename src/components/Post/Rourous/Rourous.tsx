@@ -45,32 +45,71 @@ const Rourous = ({ postId, rourous }: RourousProps) => {
     return true
   }, [rourous])
 
+  const rourouSelectedByUser = useMemo(() => {
+    return rourous.find((oneRourou) => oneRourou.Author.id === currentUser?.id)
+  }, [rourous, currentUser?.id])
+
   const isRourouSelectedByUser = useCallback(
     (rourouType: ROUROU_TYPES) => {
-      return rourous.some(
-        (oneRourou) =>
-          oneRourou.name === rourouType &&
-          oneRourou.Author.id === currentUser?.id
-      )
+      return rourouSelectedByUser?.name === rourouType
     },
     [rourous, currentUser?.id]
   )
 
   const handleRourouSelect = async (selectedRourou: ROUROU_TYPES) => {
     try {
-      const postRourouResponse = await fetch(`${endpoint}/api/rourous`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          authorId: currentUser!.id,
-          postId,
-          rourouName: selectedRourou,
-        }),
-      })
+      if (rourouSelectedByUser != undefined) {
+        // Delete rourou case
+        if (isRourouSelectedByUser(selectedRourou)) {
+          const deleteRourouResponse = await fetch(
+            `${endpoint}/api/rourous/${rourouSelectedByUser.id}`,
+            {
+              method: 'DELETE',
+              credentials: 'include',
+            }
+          )
 
-      if (!postRourouResponse.ok) {
-        throw new Error("Erreur lors de l'envoi du Rourou")
+          if (!deleteRourouResponse.ok) {
+            throw new Error('Erreur lors de la suppression du Rourou')
+          }
+        }
+
+        // Update rourou case
+        else {
+          const patchRourouResponse = await fetch(
+            `${endpoint}/api/rourous/${rourouSelectedByUser.id}`,
+            {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                rourouName: selectedRourou,
+              }),
+            }
+          )
+
+          if (!patchRourouResponse.ok) {
+            throw new Error('Erreur lors de la mise à jour du Rourou')
+          }
+        }
+      }
+
+      // Create new rourou case
+      else {
+        const postRourouResponse = await fetch(`${endpoint}/api/rourous`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            authorId: currentUser!.id,
+            postId,
+            rourouName: selectedRourou,
+          }),
+        })
+
+        if (!postRourouResponse.ok) {
+          throw new Error("Erreur lors de l'envoi du Rourou")
+        }
       }
     } catch (err) {
       console.error('Submit error:', err)
@@ -101,6 +140,7 @@ const Rourous = ({ postId, rourous }: RourousProps) => {
                   src={`./rourou_icons/${rourouType}.png`}
                   alt={rourouType}
                   className="h-[1.5em]"
+                  onClick={() => handleRourouSelect(rourouType)}
                 />
                 <p className="text-xs">{count}</p>
               </div>
