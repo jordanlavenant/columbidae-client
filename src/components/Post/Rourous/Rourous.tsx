@@ -8,22 +8,9 @@ import {
 } from '@/components/ui/hover-card'
 import { ALL_ROUROU_TYPES, ROUROU_TYPES } from '@/constants/rourou.consts'
 import { useAuth } from '@/hooks/use-auth'
+import type { Post } from '@/services/models/post/post'
 
-interface RourousProps {
-  rourous: {
-    id: string
-    name: string
-    createdAt: string
-    postId: string
-    Author: {
-      id: string | undefined
-      name: string
-      email: string
-    }
-  }[]
-}
-
-const Rourous = ({ rourous }: RourousProps) => {
+const Rourous = ({ rourous }: { rourous: Post['Reacts'] }) => {
   const { currentUser } = useAuth()
 
   const rourouGroups: Record<string, number> = useMemo(() => {

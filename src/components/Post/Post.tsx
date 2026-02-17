@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { getInitials } from '@/lib/utils'
 import { formatTimeDifference } from '@/lib/time'
+import Comments from './Comments/Comments'
 
 const PostComponent = ({ post }: { post: Post }) => {
   const navigate = useNavigate()
@@ -100,7 +101,7 @@ const PostComponent = ({ post }: { post: Post }) => {
   }
 
   return (
-    <div key={post.id} className="mb-4 overflow-hidden shadow-sm border-b">
+    <div key={post.id} className="mb-4 overflow-hidden shadow-sm">
       {/* Header */}
       <div
         className="p-4 pb-3 hover:cursor-pointer"
@@ -158,28 +159,13 @@ const PostComponent = ({ post }: { post: Post }) => {
         </div>
       )}
 
-      {/* Actions */}
       {!hasAssets && <Separator />}
-      <div className="px-4 py-3">
+
+      {/* Footer & Actions */}
+      <div className="p-4 flex items-center justify-between">
+        <Comments comments={post.Comments} postId={post.id} />
         <Rourous rourous={post.Reacts} />
       </div>
-
-      {/* Comments */}
-      {post.Comments.length > 0 && (
-        <div className="px-4 py-3 border-t">
-          <h3 className="text-sm font-semibold mb-2">
-            Commentaires ({post.Comments.length})
-          </h3>
-          <div className="space-y-2">
-            {post.Comments.map((com) => (
-              <div key={com.id} className="text-sm">
-                <span className="font-semibold">{com.Author.name}</span>
-                <span className="ml-2 text-gray-700">{com.comment}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

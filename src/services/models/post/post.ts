@@ -15,6 +15,7 @@ export type Post = {
     id: string
     comment: string
     postId: string
+    createdAt: string
     Author: {
       id: string
       username: string

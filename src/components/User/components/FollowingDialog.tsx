@@ -10,26 +10,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { getInitials } from '@/lib/utils'
+import type { User } from '@/services/models/user/user'
 import { X } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-interface FollowedProps {
-  following: {
-    id: string
-    followed: {
-      id: string
-      username: string
-      name: string
-      Avatar: {
-        id: string
-        url: string
-      } | null
-    }
-  }[]
-}
-
-const FollowingDialog = ({ following }: FollowedProps) => {
+const FollowingDialog = ({ following }: { following: User['Following'] }) => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 

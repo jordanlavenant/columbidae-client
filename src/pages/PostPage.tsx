@@ -1,9 +1,4 @@
 import PostComponent from '@/components/Post/Post'
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
 import { useEndpoint } from '@/hooks/use-endpoint'
 import fetchPost from '@/services/functions/post/fetch-post'
 import type { Post } from '@/services/models/post/post'
@@ -38,7 +33,7 @@ const PostPage = () => {
   if (!post) return <div>Post not found</div>
 
   return (
-    <section className="max-w-2xl mx-auto">
+    <section className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:max-w-2xl w-full">
       <PostComponent post={post} />
     </section>
   )

@@ -4,6 +4,10 @@ export function formatTimeDifference(date: string): string {
     (now.getTime() - new Date(date).getTime()) / 1000
   )
 
+  if (diffInSeconds < 20) {
+    return "À l'instant"
+  }
+
   if (diffInSeconds < 60) {
     return `Il y a ${diffInSeconds} seconde${diffInSeconds !== 1 ? 's' : ''}`
   }

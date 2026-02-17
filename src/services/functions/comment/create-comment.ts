@@ -7,10 +7,10 @@ export interface CreateCommentPayload {
 }
 
 /**
- * Create a post.
+ * Create a comment.
  *
  * @param {string} endpoint The endpoint URL of the API
- * @param {CreateCommentPayload} payload The data to create the post
+ * @param {CreateCommentPayload} payload The data to create the comment
  * @returns {Promise<Response>} The fetch response promise
  */
 export default function createComment(

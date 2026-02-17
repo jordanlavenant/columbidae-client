@@ -11,6 +11,8 @@ import {
   PostEventType,
   type PostEvent,
 } from '@/services/events/post/post-event'
+import { toast } from 'sonner'
+import { Separator } from '../ui/separator'
 
 const Feed = () => {
   const { logout } = useAuth()
@@ -27,11 +29,13 @@ const Feed = () => {
     const eventSource = subscribePostEvents(ENDPOINT)
     eventSource.onmessage = (msg: MessageEvent) => {
       const event: PostEvent = JSON.parse(msg.data)
+      // Handle Error
       if (event.type === 'Error') {
         console.log('error')
         console.error(event.message)
         return
       }
+      // Handle Post Update
       if (event.type === PostEventType.PostUpdate) {
         setPosts((prevPosts) => {
           const existingPostIndex = prevPosts.findIndex(
@@ -47,6 +51,8 @@ const Feed = () => {
             return [...prevPosts, event.post]
           }
         })
+        // TODO: disable push notification if the user is currently on the feed page
+        toast.success('De nouvelles publications sont disponibles !')
       }
     }
     eventSource.onerror = (err) => {
@@ -54,7 +60,7 @@ const Feed = () => {
       eventSource.close()
     }
     return () => eventSource.close()
-  }, [ENDPOINT, setPosts])
+  }, [ENDPOINT])
 
   return (
     <section className="p-4">
@@ -69,7 +75,10 @@ const Feed = () => {
         {posts
           .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
           .map((post) => (
-            <PostComponent post={post} key={post.id} />
+            <div key={post.id}>
+              <PostComponent post={post} />
+              <Separator className="my-4" />
+            </div>
           ))}
       </section>
     </section>
