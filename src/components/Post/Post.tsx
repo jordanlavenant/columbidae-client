@@ -9,7 +9,6 @@ import {
 } from '../ui/carousel'
 import { useState, useRef, useEffect } from 'react'
 import Rourous from './Rourous/Rourous'
-import { Separator } from '@radix-ui/react-separator'
 
 const Post = ({
   post,
@@ -179,7 +178,6 @@ const Post = ({
       )}
 
       {/* Actions */}
-      {!hasAssets && <Separator />}
       <div className="px-4 py-3">
         <Rourous postId={post.id} rourous={post.Reacts} />
       </div>
