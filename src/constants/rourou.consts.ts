@@ -1,0 +1,29 @@
+export enum ROUROU_TYPES {
+  CASUAL_ROUROU = 'casual_rourou',
+  LAUGHING_ROUROU = 'laughing_rourou',
+  DOUBTFUL_ROUROU = 'doubtful_rourou',
+  ADMIRING_ROUROU = 'admiring_rourou',
+  ANGRY_ROUROU = 'angry_rourou',
+  SURPRISED_ROUROU = 'surprised_rourou',
+  SAD_ROUROU = 'sad_rourou',
+}
+
+export const ALL_ROUROU_TYPES = [
+  ROUROU_TYPES.CASUAL_ROUROU,
+  ROUROU_TYPES.LAUGHING_ROUROU,
+  ROUROU_TYPES.DOUBTFUL_ROUROU,
+  ROUROU_TYPES.ADMIRING_ROUROU,
+  ROUROU_TYPES.ANGRY_ROUROU,
+  ROUROU_TYPES.SURPRISED_ROUROU,
+  ROUROU_TYPES.SAD_ROUROU,
+]
+
+export const FRENCH_ROUROU_LABELS: Record<ROUROU_TYPES, string> = {
+  [ROUROU_TYPES.CASUAL_ROUROU]: 'Rourou',
+  [ROUROU_TYPES.LAUGHING_ROUROU]: 'Rourou hilare',
+  [ROUROU_TYPES.DOUBTFUL_ROUROU]: 'Rourou dubitatif',
+  [ROUROU_TYPES.ADMIRING_ROUROU]: 'Rourou admiratif',
+  [ROUROU_TYPES.ANGRY_ROUROU]: 'Rourou en colère',
+  [ROUROU_TYPES.SURPRISED_ROUROU]: 'Rourou surpris',
+  [ROUROU_TYPES.SAD_ROUROU]: 'Rourou triste',
+}

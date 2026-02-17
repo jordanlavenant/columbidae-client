@@ -1,4 +1,4 @@
-import { Volume2, VolumeOff } from 'lucide-react'
+import { Play, Volume2, VolumeOff } from 'lucide-react'
 import { Button } from '../ui/button'
 import {
   Carousel,
@@ -8,6 +8,7 @@ import {
   CarouselPrevious,
 } from '../ui/carousel'
 import { useState, useRef, useEffect } from 'react'
+import Rourous from './Rourous/Rourous'
 
 const Post = ({
   post,
@@ -36,9 +37,21 @@ const Post = ({
         email: string
       }
     }[]
+    Reacts: {
+      id: string
+      name: string
+      createdAt: string
+      postId: string
+      Author: {
+        id: string
+        name: string
+        email: string
+      }
+    }[]
   }
 }) => {
   const [muted, setMuted] = useState(true)
+  const [paused, setPaused] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   // Auto play/pause video based on visibility
@@ -49,7 +62,7 @@ const Post = ({
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && !paused) {
             video.play().catch(() => {})
           } else {
             video.pause()
@@ -66,7 +79,7 @@ const Post = ({
     return () => {
       observer.disconnect()
     }
-  }, [])
+  }, [paused])
 
   const hasAssets = post.Assets && post.Assets.length > 0
   const hasMultipleAssets = post.Assets && post.Assets.length > 1
@@ -82,15 +95,25 @@ const Post = ({
       )
     } else if (asset.mimeType.startsWith('video/')) {
       return (
-        <div className="relative">
+        <div className="relative w-full max-h-[85vh] bg-black flex items-center justify-center">
           <video
             ref={videoRef}
             src={asset.url}
-            className="w-full h-full object-cover"
+            className="max-h-[85vh] w-auto object-contain"
             loop
             muted={muted}
             playsInline
           />
+          {/* Clickable Play/Pause div */}
+          <div
+            className="absolute inset-0 sizeb-8 flex justify-center items-center"
+            onClick={() => setPaused(!paused)}
+          >
+            {paused && (
+              <Play className="size-16 text-white absolute fill-white" />
+            )}
+          </div>
+
           <Button
             variant="default"
             className="absolute bottom-2 right-2 size-8 rounded-full bg-card/70 hover:bg-card/90 hover:cursor-pointer"
@@ -116,6 +139,7 @@ const Post = ({
       {/* Header */}
       <div className="p-4 pb-3">
         <div className="flex items-center gap-3">
+          {/* TODO : Implement profile image */}
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">
             {post.Author.name.charAt(0).toUpperCase()}
           </div>
@@ -138,7 +162,7 @@ const Post = ({
               <CarouselContent>
                 {post.Assets!.map((asset) => (
                   <CarouselItem key={asset.id}>
-                    <div className="w-full aspect-square bg-gray-100">
+                    <div className="w-full bg-gray-100">
                       {renderMedia(asset)}
                     </div>
                   </CarouselItem>
@@ -148,12 +172,15 @@ const Post = ({
               <CarouselNext className="right-2" />
             </Carousel>
           ) : (
-            <div className="w-full aspect-square bg-gray-100">
-              {renderMedia(post.Assets![0])}
-            </div>
+            <div className="w-full">{renderMedia(post.Assets![0])}</div>
           )}
         </div>
       )}
+
+      {/* Actions */}
+      <div className="px-4 py-3">
+        <Rourous postId={post.id} rourous={post.Reacts} />
+      </div>
 
       {/* Comments */}
       {post.Comments.length > 0 && (
