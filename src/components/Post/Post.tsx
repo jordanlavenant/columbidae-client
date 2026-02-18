@@ -162,7 +162,7 @@ const PostComponent = ({
           )}
         </div>
       )}
-
+      
       {!hasAssets && <Separator />}
 
       {/* Footer & Actions */}

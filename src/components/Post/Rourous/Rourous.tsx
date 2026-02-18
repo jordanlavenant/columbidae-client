@@ -1,17 +1,12 @@
-import { CirclePlus } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
 import { ALL_ROUROU_TYPES, ROUROU_TYPES } from '@/constants/rourou.consts'
 import { useAuth } from '@/hooks/use-auth'
 import type { Post } from '@/services/models/post/post'
 
 const Rourous = ({ rourous }: { rourous: Post['Reacts'] }) => {
   const { currentUser } = useAuth()
+  const endpoint = useEndpoint()
 
   const rourouGroups: Record<string, number> = useMemo(() => {
     const groupedRourous = Object.fromEntries(
@@ -34,16 +29,76 @@ const Rourous = ({ rourous }: { rourous: Post['Reacts'] }) => {
     return true
   }, [rourous])
 
+  const rourouSelectedByUser = useMemo(() => {
+    return rourous.find((oneRourou) => oneRourou.Author.id === currentUser?.id)
+  }, [rourous, currentUser?.id])
+
   const isRourouSelectedByUser = useCallback(
     (rourouType: ROUROU_TYPES) => {
-      return rourous.some(
-        (oneRourou) =>
-          oneRourou.name === rourouType &&
-          oneRourou.Author.id === currentUser?.id
-      )
+      return rourouSelectedByUser?.name === rourouType
     },
     [rourous, currentUser?.id]
   )
+
+  const handleRourouSelect = async (selectedRourou: ROUROU_TYPES) => {
+    try {
+      if (rourouSelectedByUser != undefined) {
+        // Delete rourou case
+        if (isRourouSelectedByUser(selectedRourou)) {
+          const deleteRourouResponse = await fetch(
+            `${endpoint}/api/rourous/${rourouSelectedByUser.id}`,
+            {
+              method: 'DELETE',
+              credentials: 'include',
+            }
+          )
+
+          if (!deleteRourouResponse.ok) {
+            throw new Error('Erreur lors de la suppression du Rourou')
+          }
+        }
+
+        // Update rourou case
+        else {
+          const patchRourouResponse = await fetch(
+            `${endpoint}/api/rourous/${rourouSelectedByUser.id}`,
+            {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                rourouName: selectedRourou,
+              }),
+            }
+          )
+
+          if (!patchRourouResponse.ok) {
+            throw new Error('Erreur lors de la mise à jour du Rourou')
+          }
+        }
+      }
+
+      // Create new rourou case
+      else {
+        const postRourouResponse = await fetch(`${endpoint}/api/rourous`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            authorId: currentUser!.id,
+            postId,
+            rourouName: selectedRourou,
+          }),
+        })
+
+        if (!postRourouResponse.ok) {
+          throw new Error("Erreur lors de l'envoi du Rourou")
+        }
+      }
+    } catch (err) {
+      console.error('Submit error:', err)
+    }
+  }
 
   return (
     <div className="flex items-center gap-1">
@@ -69,6 +124,7 @@ const Rourous = ({ rourous }: { rourous: Post['Reacts'] }) => {
                   src={`./rourou_icons/${rourouType}.png`}
                   alt={rourouType}
                   className="h-[1.5em]"
+                  onClick={() => handleRourouSelect(rourouType)}
                 />
                 <p className="text-xs">{count}</p>
               </div>
@@ -76,20 +132,7 @@ const Rourous = ({ rourous }: { rourous: Post['Reacts'] }) => {
           })}
         </div>
       )}
-      <HoverCard openDelay={10} closeDelay={100}>
-        <HoverCardTrigger asChild>
-          <CirclePlus className="hover:cursor-pointer" />
-        </HoverCardTrigger>
-        <HoverCardContent className="flex gap-0.5">
-          {ALL_ROUROU_TYPES.map((rourouType) => (
-            <img
-              src={`./rourou_icons/${rourouType}.png`}
-              alt={rourouType}
-              className="h-[1.5em]"
-            />
-          ))}
-        </HoverCardContent>
-      </HoverCard>
+      <RourouSelector onRourouSelect={handleRourouSelect} />
     </div>
   )
 }
