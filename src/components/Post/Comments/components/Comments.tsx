@@ -1,9 +1,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/hooks/use-auth'
+import { useEndpoint } from '@/hooks/use-endpoint'
 import { formatTimeDifference } from '@/lib/time'
 import { cn } from '@/lib/utils'
 import type { Post } from '@/services/models/post/post'
+import deleteComment from '@/services/functions/comment/delete-post'
 import { Ellipsis } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 const Comments = ({
   className,
@@ -14,6 +22,21 @@ const Comments = ({
 }) => {
   const { currentUser } = useAuth()
   const currentUserId = currentUser?.id
+  const endpoint = useEndpoint()
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      const response = await deleteComment(endpoint, commentId)
+      if (response.ok) {
+        console.log('Commentaire supprimé avec succès')
+        // La mise à jour se fera via le système d'événements SSE
+      } else {
+        console.error('Erreur lors de la suppression du commentaire')
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression du commentaire:', error)
+    }
+  }
 
   return (
     <section className={cn('p-2 overflow-y-auto space-y-6 py-4', className)}>
@@ -26,12 +49,23 @@ const Comments = ({
           .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
           .map((entry) => (
             <div key={entry.id} className="flex items-start gap-x-2 relative">
-              {/* TODO: Add edit/delete options for comment owner */}
               {entry.Author?.id === currentUserId && (
-                <Ellipsis
-                  size={16}
-                  className="absolute top-1 right-2 text-muted-foreground"
-                />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Ellipsis
+                      size={16}
+                      className="absolute top-1 right-2 text-muted-foreground"
+                    />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem
+                      className="text-red-500 hover:bg-red-50 hover:cursor-pointer"
+                      onClick={() => handleDeleteComment(entry.id)}
+                    >
+                      Supprimer
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
               <Avatar className="size-10">
                 <AvatarImage

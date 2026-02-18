@@ -88,6 +88,7 @@ const CommentsDrawer = ({
               placeholder="Ajouter un commentaire..."
               value={currComment}
               onChange={(e) => setCurrComment(e.target.value)}
+              autoFocus
             />
             <Button type="submit" className="h-14 sm:h-10">
               Publier

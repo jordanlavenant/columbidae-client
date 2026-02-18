@@ -59,7 +59,7 @@ const CommentsSide = ({
   }
 
   return (
-    <section className={cn(className, 'flex flex-col h-full')}>
+    <section className={cn(className, 'flex-col h-full')}>
       <div className="flex-1 overflow-y-auto max-h-[70vh]">
         <Comments comments={comments} />
       </div>
@@ -72,6 +72,7 @@ const CommentsSide = ({
           placeholder="Ajouter un commentaire..."
           value={currComment}
           onChange={(e) => setCurrComment(e.target.value)}
+          autoFocus
         />
         <Button type="submit" className="h-14 sm:h-10">
           Publier
