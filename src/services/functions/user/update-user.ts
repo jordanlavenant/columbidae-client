@@ -22,7 +22,6 @@ export default function updateUser(
   userId: string,
   payload: UpdateUserPayload
 ): Promise<Response> {
-  console.log(payload)
   return fetch(`${endpoint}${ROUTE}/${userId}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),

@@ -31,7 +31,6 @@ const Feed = () => {
       const event: PostEvent = JSON.parse(msg.data)
       // Handle Error
       if (event.type === 'Error') {
-        console.log('error')
         console.error(event.message)
         return
       }

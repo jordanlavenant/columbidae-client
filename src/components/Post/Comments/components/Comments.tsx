@@ -28,8 +28,7 @@ const Comments = ({
     try {
       const response = await deleteComment(endpoint, commentId)
       if (response.ok) {
-        console.log('Commentaire supprimé avec succès')
-        // La mise à jour se fera via le système d'événements SSE
+        // TODO: La mise à jour se fera via le système d'événements SSE
       } else {
         console.error('Erreur lors de la suppression du commentaire')
       }

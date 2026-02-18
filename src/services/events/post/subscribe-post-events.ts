@@ -10,6 +10,5 @@ const ROUTE = '/api/posts/events'
  * @returns {EventSource} The event source to listen to posts events
  */
 export default function subscribePostEvents(endpoint: string): EventSource {
-  console.log('Subscribing to post events at', endpoint + ROUTE)
   return new EventSource(endpoint + ROUTE)
 }

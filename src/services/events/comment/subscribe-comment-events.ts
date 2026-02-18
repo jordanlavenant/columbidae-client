@@ -10,6 +10,5 @@ const ROUTE = '/api/comments/events'
  * @returns {EventSource} The event source to listen to comment events
  */
 export default function subscribeCommentEvents(endpoint: string): EventSource {
-  console.log('Subscribing to comment events at', endpoint + ROUTE)
   return new EventSource(endpoint + ROUTE)
 }
