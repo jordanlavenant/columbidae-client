@@ -1,3 +1,4 @@
+import { Toaster } from 'sonner'
 import './App.css'
 import { ThemeProvider } from './components/theme-provider'
 import { AuthProvider } from './hooks/use-auth'
@@ -15,6 +16,7 @@ const App = () => {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <EndpointProvider endpoint={ENDPOINT}>
         <AuthProvider>
+          <Toaster position="top-center" />
           <Router />
         </AuthProvider>
       </EndpointProvider>

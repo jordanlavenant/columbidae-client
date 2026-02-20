@@ -1,4 +1,4 @@
-const ROUTE = '/users'
+const ROUTE = '/api/users'
 
 /**
  * Post a user to create it.
@@ -9,12 +9,14 @@ const ROUTE = '/users'
  */
 export default function createUser(
   endpoint: string,
+  username: string,
   name: string,
   email: string
 ): Promise<Response> {
   return fetch(endpoint + ROUTE, {
     method: 'POST',
     body: JSON.stringify({
+      username,
       name,
       email,
     }),

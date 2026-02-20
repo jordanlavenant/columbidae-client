@@ -1,4 +1,4 @@
-import { Play, Volume2, VolumeOff } from 'lucide-react'
+import { MessageCircle, Play, Volume2, VolumeOff } from 'lucide-react'
 import { Button } from '../ui/button'
 import {
   Carousel,
@@ -9,47 +9,22 @@ import {
 } from '../ui/carousel'
 import { useState, useRef, useEffect } from 'react'
 import Rourous from './Rourous/Rourous'
+import { Separator } from '@radix-ui/react-separator'
+import type { Post } from '@/services/models/post/post'
+import { useNavigate } from 'react-router-dom'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { cn, getInitials } from '@/lib/utils'
+import { formatTimeDifference } from '@/lib/time'
+import CommentsDrawer from './Comments/CommentsDrawer'
 
-const Post = ({
+const PostComponent = ({
+  className,
   post,
 }: {
-  post: {
-    id: string
-    content: string
-    createdAt: string
-    Author: {
-      id: string
-      name: string
-      email: string
-    }
-    Assets?: {
-      id: string
-      url: string
-      mimeType: string
-    }[]
-    Comments: {
-      id: string
-      comment: string
-      postId: string
-      Author: {
-        id: string
-        name: string
-        email: string
-      }
-    }[]
-    Reacts: {
-      id: string
-      name: string
-      createdAt: string
-      postId: string
-      Author: {
-        id: string
-        name: string
-        email: string
-      }
-    }[]
-  }
+  className?: string
+  post: Post
 }) => {
+  const navigate = useNavigate()
   const [muted, setMuted] = useState(true)
   const [paused, setPaused] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -90,7 +65,7 @@ const Post = ({
         <img
           src={asset.url}
           alt="Post asset"
-          className="w-full h-full object-cover"
+          className="w-full max-h-[85vh] object-contain rounded-xl"
         />
       )
     } else if (asset.mimeType.startsWith('video/')) {
@@ -132,25 +107,38 @@ const Post = ({
   }
 
   return (
-    <div
-      key={post.id}
-      className="mb-4 border rounded-lg overflow-hidden bg-card shadow-sm max-w-2xl mx-auto"
-    >
+    <div key={post.id} className={cn('overflow-hidden shadow-sm', className)}>
       {/* Header */}
-      <div className="p-4 pb-3">
+      <div
+        className="p-4 pb-3 hover:cursor-pointer"
+        onClick={() => navigate(`/${post.Author.username}`)}
+      >
         <div className="flex items-center gap-3">
-          {/* TODO : Implement profile image */}
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">
-            {post.Author.name.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <p className="font-semibold text-sm">{post.Author.name}</p>
+          {/* Avatar */}
+          <Avatar className="size-8">
+            <AvatarImage
+              src={post.Author.Avatar?.url}
+              alt={post.Author.name}
+              className="object-cover"
+            />
+            <AvatarFallback className="text-md font-mono">
+              {getInitials(post.Author.name)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex items-center gap-x-2">
+            <p className="font-semibold text-sm">{post.Author.username}</p>
+            <p className="text-sm text-muted-foreground">
+              {formatTimeDifference(post.createdAt)}
+            </p>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="px-4 pb-3">
+      <div
+        className="px-4 pb-3 hover:cursor-pointer"
+        onClick={() => navigate(`/p/${post.id}`)}
+      >
         <p className="text-sm whitespace-pre-wrap">{post.content}</p>
       </div>
 
@@ -162,9 +150,7 @@ const Post = ({
               <CarouselContent>
                 {post.Assets!.map((asset) => (
                   <CarouselItem key={asset.id}>
-                    <div className="w-full bg-gray-100">
-                      {renderMedia(asset)}
-                    </div>
+                    <div className="w-full">{renderMedia(asset)}</div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
@@ -176,30 +162,27 @@ const Post = ({
           )}
         </div>
       )}
+      
+      {!hasAssets && <Separator />}
 
-      {/* Actions */}
-      <div className="px-4 py-3">
-        <Rourous postId={post.id} rourous={post.Reacts} />
+      {/* Footer & Actions */}
+      <div className="p-4 flex items-center justify-between">
+        {/* Mobile comments drawer */}
+        <CommentsDrawer
+          className="md:hidden"
+          comments={post.Comments}
+          postId={post.id}
+        />
+        {/* Desktop comments */}
+        <MessageCircle
+          onClick={() => navigate(`/p/${post.id}`)}
+          className="hidden md:block hover:cursor-pointer"
+        />
+        {/* Rourous */}
+        <Rourous rourous={post.Reacts} />
       </div>
-
-      {/* Comments */}
-      {post.Comments.length > 0 && (
-        <div className="px-4 py-3 border-t">
-          <h3 className="text-sm font-semibold mb-2">
-            Commentaires ({post.Comments.length})
-          </h3>
-          <div className="space-y-2">
-            {post.Comments.map((com) => (
-              <div key={com.id} className="text-sm">
-                <span className="font-semibold">{com.Author.name}</span>
-                <span className="ml-2 text-gray-700">{com.comment}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
 
-export default Post
+export default PostComponent

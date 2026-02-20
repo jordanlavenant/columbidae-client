@@ -2,25 +2,9 @@ import { useCallback, useMemo } from 'react'
 
 import { ALL_ROUROU_TYPES, ROUROU_TYPES } from '@/constants/rourou.consts'
 import { useAuth } from '@/hooks/use-auth'
-import { useEndpoint } from '@/hooks/use-endpoint'
-import RourouSelector from './RourouSelector/RourouSelector'
+import type { Post } from '@/services/models/post/post'
 
-interface RourousProps {
-  postId: string
-  rourous: {
-    id: string
-    name: string
-    createdAt: string
-    postId: string
-    Author: {
-      id: string | undefined
-      name: string
-      email: string
-    }
-  }[]
-}
-
-const Rourous = ({ postId, rourous }: RourousProps) => {
+const Rourous = ({ rourous }: { rourous: Post['Reacts'] }) => {
   const { currentUser } = useAuth()
   const endpoint = useEndpoint()
 

@@ -6,9 +6,14 @@ import { ImagePlus, X } from 'lucide-react'
 interface AssetUploaderProps {
   onFileSelect?: (file: File | null) => void
   disabled?: boolean
+  label?: string
 }
 
-const AssetUploader = ({ onFileSelect, disabled }: AssetUploaderProps) => {
+const AssetUploader = ({
+  onFileSelect,
+  disabled,
+  label,
+}: AssetUploaderProps) => {
   const [preview, setPreview] = useState<string | null>(null)
   const [fileName, setFileName] = useState<string | null>(null)
   const [fileType, setFileType] = useState<string | null>(null)
@@ -62,7 +67,7 @@ const AssetUploader = ({ onFileSelect, disabled }: AssetUploaderProps) => {
             className="w-full hover:cursor-pointer"
           >
             <ImagePlus className="w-4 h-4 mr-2" />
-            Ajouter une photo ou vidéo
+            {label}
           </Button>
           <Input
             ref={fileInputRef}

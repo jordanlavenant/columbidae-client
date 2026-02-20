@@ -1,53 +1,24 @@
-import fetchPosts from '@/services/post/fetch-post'
-import {
-  PostEventType,
-  type PostEvent,
-} from '@/services/post/models/post-event'
-import subscribePostEvents from '@/services/post/subscribe-post-events'
+import fetchPosts from '@/services/functions/post/fetch-posts'
+import subscribePostEvents from '@/services/events/post/subscribe-post-events'
 import { useEffect, useState } from 'react'
-import Post from '../Post/Post'
 import { useEndpoint } from '@/hooks/use-endpoint'
 import { Button } from '../ui/button'
 import { useAuth } from '@/hooks/use-auth'
 import PostForm from '../PostForm/PostForm'
+import type { Post } from '@/services/models/post/post'
+import PostComponent from '../Post/Post'
+import {
+  PostEventType,
+  type PostEvent,
+} from '@/services/events/post/post-event'
+import { toast } from 'sonner'
+import { Separator } from '../ui/separator'
 
 const Feed = () => {
   const { logout } = useAuth()
 
   const ENDPOINT = useEndpoint()
-  const [posts, setPosts] = useState<
-    {
-      id: string
-      content: string
-      createdAt: string
-      Author: {
-        id: string
-        name: string
-        email: string
-      }
-      Comments: {
-        id: string
-        comment: string
-        postId: string
-        Author: {
-          id: string
-          name: string
-          email: string
-        }
-      }[]
-      Reacts: {
-        id: string
-        name: string
-        createdAt: string
-        postId: string
-        Author: {
-          id: string
-          name: string
-          email: string
-        }
-      }[]
-    }[]
-  >([])
+  const [posts, setPosts] = useState<Post[]>([])
 
   useEffect(() => {
     try {
@@ -58,15 +29,13 @@ const Feed = () => {
     const eventSource = subscribePostEvents(ENDPOINT)
     eventSource.onmessage = (msg: MessageEvent) => {
       const event: PostEvent = JSON.parse(msg.data)
+      // Handle Error
       if (event.type === 'Error') {
-        console.log('error')
         console.error(event.message)
         return
       }
+      // Handle Post Update
       if (event.type === PostEventType.PostUpdate) {
-        // ! DEBUG LOGGING
-        console.log('success')
-        console.log(event)
         setPosts((prevPosts) => {
           const existingPostIndex = prevPosts.findIndex(
             (post) => post.id === event.post.id
@@ -81,6 +50,8 @@ const Feed = () => {
             return [...prevPosts, event.post]
           }
         })
+        // TODO: disable push notification if the user is currently on the feed page
+        toast.success('De nouvelles publications sont disponibles !')
       }
     }
     eventSource.onerror = (err) => {
@@ -88,7 +59,7 @@ const Feed = () => {
       eventSource.close()
     }
     return () => eventSource.close()
-  }, [ENDPOINT, setPosts])
+  }, [ENDPOINT])
 
   return (
     <section className="p-4">
@@ -99,11 +70,16 @@ const Feed = () => {
         </Button>
       </section>
       {posts.length === 0 && <p>No posts available.</p>}
-      {posts
-        .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-        .map((post) => (
-          <Post post={post} key={post.id} />
-        ))}
+      <section className="mx-auto max-w-md">
+        {posts
+          .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+          .map((post) => (
+            <div key={post.id}>
+              <PostComponent post={post} />
+              <Separator className="my-4" />
+            </div>
+          ))}
+      </section>
     </section>
   )
 }
