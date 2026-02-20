@@ -4,7 +4,7 @@ import { useEndpoint } from '@/hooks/use-endpoint'
 import { formatTimeDifference } from '@/lib/time'
 import { cn } from '@/lib/utils'
 import type { Post } from '@/services/models/post/post'
-import deleteComment from '@/services/functions/comment/delete-post'
+import deleteComment from '@/services/functions/comment/delete-comment'
 import { Ellipsis } from 'lucide-react'
 import {
   DropdownMenu,

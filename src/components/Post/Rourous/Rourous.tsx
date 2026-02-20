@@ -3,8 +3,21 @@ import { useCallback, useMemo } from 'react'
 import { ALL_ROUROU_TYPES, ROUROU_TYPES } from '@/constants/rourou.consts'
 import { useAuth } from '@/hooks/use-auth'
 import type { Post } from '@/services/models/post/post'
+import { useEndpoint } from '@/hooks/use-endpoint'
+import RourouSelector from './RourouSelector/RourouSelector'
+import createRourou, {
+  type CreateRourouPayload,
+} from '@/services/functions/rourou/create-rourou'
+import deleteRourou from '@/services/functions/rourou/delete-rourou'
+import patchRourou from '@/services/functions/rourou/patch-rourou'
 
-const Rourous = ({ rourous }: { rourous: Post['Reacts'] }) => {
+const Rourous = ({
+  rourous,
+  postId,
+}: {
+  rourous: Post['Reacts']
+  postId: string
+}) => {
   const { currentUser } = useAuth()
   const endpoint = useEndpoint()
 
@@ -45,14 +58,10 @@ const Rourous = ({ rourous }: { rourous: Post['Reacts'] }) => {
       if (rourouSelectedByUser != undefined) {
         // Delete rourou case
         if (isRourouSelectedByUser(selectedRourou)) {
-          const deleteRourouResponse = await fetch(
-            `${endpoint}/api/rourous/${rourouSelectedByUser.id}`,
-            {
-              method: 'DELETE',
-              credentials: 'include',
-            }
+          const deleteRourouResponse = await deleteRourou(
+            endpoint,
+            rourouSelectedByUser.id
           )
-
           if (!deleteRourouResponse.ok) {
             throw new Error('Erreur lors de la suppression du Rourou')
           }
@@ -60,16 +69,10 @@ const Rourous = ({ rourous }: { rourous: Post['Reacts'] }) => {
 
         // Update rourou case
         else {
-          const patchRourouResponse = await fetch(
-            `${endpoint}/api/rourous/${rourouSelectedByUser.id}`,
-            {
-              method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({
-                rourouName: selectedRourou,
-              }),
-            }
+          const patchRourouResponse = await patchRourou(
+            endpoint,
+            rourouSelectedByUser.id,
+            selectedRourou
           )
 
           if (!patchRourouResponse.ok) {
@@ -80,17 +83,12 @@ const Rourous = ({ rourous }: { rourous: Post['Reacts'] }) => {
 
       // Create new rourou case
       else {
-        const postRourouResponse = await fetch(`${endpoint}/api/rourous`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            authorId: currentUser!.id,
-            postId,
-            rourouName: selectedRourou,
-          }),
-        })
-
+        const payload: CreateRourouPayload = {
+          authorId: currentUser!.id,
+          postId,
+          rourouName: selectedRourou,
+        }
+        const postRourouResponse = await createRourou(endpoint, payload)
         if (!postRourouResponse.ok) {
           throw new Error("Erreur lors de l'envoi du Rourou")
         }

@@ -162,7 +162,7 @@ const PostComponent = ({
           )}
         </div>
       )}
-      
+
       {!hasAssets && <Separator />}
 
       {/* Footer & Actions */}
@@ -179,7 +179,7 @@ const PostComponent = ({
           className="hidden md:block hover:cursor-pointer"
         />
         {/* Rourous */}
-        <Rourous rourous={post.Reacts} />
+        <Rourous rourous={post.Reacts} postId={post.id} />
       </div>
     </div>
   )
