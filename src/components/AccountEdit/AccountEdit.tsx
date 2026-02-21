@@ -11,14 +11,15 @@ import { Alert, AlertDescription } from '../ui/alert'
 import { useEndpoint } from '@/hooks/use-endpoint'
 import updateUser from '@/services/functions/user/update-user'
 import createAsset from '@/services/functions/asset/create-asset'
+import { SquarePen } from 'lucide-react'
 
-const AccountEdit = ({ user }: { user: User }) => {
+const AccountEdit = ({ user }: { user?: User }) => {
   const endpoint = useEndpoint()
 
   // Form state
-  const [username, setUsername] = useState(user.username)
-  const [name, setName] = useState(user.name)
-  const [email, setEmail] = useState(user.email)
+  const [username, setUsername] = useState(user?.username)
+  const [name, setName] = useState(user?.name)
+  const [email, setEmail] = useState(user?.email)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -73,25 +74,33 @@ const AccountEdit = ({ user }: { user: User }) => {
         avatarId = asset.id
       }
 
-      // Mise à jour du profil
-      const response = await updateUser(endpoint, user.id, {
-        username,
-        name,
-        email,
-        avatarId,
-        currentPassword: currentPassword || undefined,
-        newPassword: newPassword || undefined,
-      })
+      // Cas où l'utilisateur est déjà créé
+      if (user) {
+        // Mise à jour du profil
+        const response = await updateUser(endpoint, user.id, {
+          username,
+          name,
+          email,
+          avatarId,
+          currentPassword: currentPassword || undefined,
+          newPassword: newPassword || undefined,
+        })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Erreur lors de la mise à jour')
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.message || 'Erreur lors de la mise à jour')
+        }
+
+        setSuccess('Profil mis à jour avec succès')
+        setCurrentPassword('')
+        setNewPassword('')
+        setConfirmPassword('')
       }
 
-      setSuccess('Profil mis à jour avec succès')
-      setCurrentPassword('')
-      setNewPassword('')
-      setConfirmPassword('')
+      // Cas où l'utilisateur s'inscrit
+      else {
+        // TODO : Requête POST
+      }
 
       // Recharger la page pour mettre à jour les données
       setTimeout(() => {
@@ -120,6 +129,13 @@ const AccountEdit = ({ user }: { user: User }) => {
           </Alert>
         )}
 
+        {/* Title */}
+        <h1 className="text-xl font-bold">
+          {user ? 'Modifier mon profil' : "S'inscrire"}
+        </h1>
+
+        <Separator />
+
         {/* Form Fields */}
         <div className="flex flex-col gap-6">
           {/* Avatar Upload */}
@@ -138,13 +154,13 @@ const AccountEdit = ({ user }: { user: User }) => {
                 src={
                   avatarFile
                     ? URL.createObjectURL(avatarFile)
-                    : user.Avatar?.url
+                    : user?.Avatar?.url
                 }
                 alt={name}
                 className="object-cover"
               />
               <AvatarFallback className="text-2xl sm:text-4xl font-mono">
-                {getInitials(name)}
+                {name && getInitials(name)}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 space-y-6">
@@ -191,61 +207,70 @@ const AccountEdit = ({ user }: { user: User }) => {
           <Separator />
 
           {/* Password Section */}
-          <div className="flex flex-col gap-6">
-            <h2 className="text-lg font-semibold">Changer le mot de passe</h2>
+          {user ? (
+            <div className="flex flex-col gap-6">
+              <h2 className="text-lg font-semibold">Changer le mot de passe</h2>
 
-            {/* Current Password */}
-            <div className="space-y-2">
-              <Label htmlFor="currentPassword">Mot de passe actuel</Label>
-              <Input
-                id="currentPassword"
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                disabled={loading}
-                placeholder="Laissez vide pour ne pas changer"
-              />
-            </div>
+              {/* Current Password */}
+              <div className="space-y-2">
+                <Label htmlFor="currentPassword">Mot de passe actuel</Label>
+                <Input
+                  id="currentPassword"
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  disabled={loading}
+                  placeholder="Laissez vide pour ne pas changer"
+                />
+              </div>
 
-            {/* New Password */}
-            <div className="space-y-2">
-              <Label htmlFor="newPassword">Nouveau mot de passe</Label>
-              <Input
-                id="newPassword"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                disabled={loading}
-                placeholder="Minimum 6 caractères"
-              />
-            </div>
+              {/* New Password */}
+              <div className="space-y-2">
+                <Label htmlFor="newPassword">Nouveau mot de passe</Label>
+                <Input
+                  id="newPassword"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  disabled={loading}
+                  placeholder="Minimum 6 caractères"
+                />
+              </div>
 
-            {/* Confirm Password */}
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">
-                Confirmer le nouveau mot de passe
-              </Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={loading}
-                className={showPasswordError ? 'border-destructive' : ''}
-              />
-              {showPasswordError && (
-                <p className="text-sm text-destructive">
-                  Les mots de passe ne correspondent pas
-                </p>
-              )}
+              {/* Confirm Password */}
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">
+                  Confirmer le nouveau mot de passe
+                </Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={loading}
+                  className={showPasswordError ? 'border-destructive' : ''}
+                />
+                {showPasswordError && (
+                  <p className="text-sm text-destructive">
+                    Les mots de passe ne correspondent pas
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <h2 className="text-lg font-semibold">Mot de passe</h2>
+          )}
         </div>
 
         {/* Submit Button */}
         <div className="flex gap-4">
           <Button type="submit" disabled={loading || showPasswordError}>
-            {loading ? 'Enregistrement...' : 'Enregistrer les modifications'}
+            <SquarePen />
+            {loading
+              ? 'Enregistrement...'
+              : user
+                ? 'Enregistrer les modifications'
+                : "S'inscrire"}
           </Button>
         </div>
       </form>

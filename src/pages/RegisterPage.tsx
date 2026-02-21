@@ -1,5 +1,7 @@
+import AccountEdit from '@/components/AccountEdit/AccountEdit'
+
 const RegisterPage = () => {
-  return <div>Register Page</div>
+  return <AccountEdit />
 }
 
 export default RegisterPage
