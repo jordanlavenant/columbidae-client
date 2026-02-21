@@ -1,18 +1,21 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { ALL_ROUROU_TYPES, ROUROU_TYPES } from '@/constants/rourou.consts'
 import { useAuth } from '@/hooks/use-auth'
 import type { Post } from '@/services/models/post/post'
 import { useEndpoint } from '@/hooks/use-endpoint'
+import { useRourouEvents } from '@/hooks/use-rourou-events'
+import { RourouEventType } from '@/services/events/rourou/rourou-event'
 import RourouSelector from './RourouSelector/RourouSelector'
 import createRourou, {
   type CreateRourouPayload,
 } from '@/services/functions/rourou/create-rourou'
 import deleteRourou from '@/services/functions/rourou/delete-rourou'
 import patchRourou from '@/services/functions/rourou/patch-rourou'
+import { cn } from '@/lib/utils'
 
 const Rourous = ({
-  rourous,
+  rourous: initialRourous,
   postId,
 }: {
   rourous: Post['Reacts']
@@ -20,6 +23,42 @@ const Rourous = ({
 }) => {
   const { currentUser } = useAuth()
   const endpoint = useEndpoint()
+
+  // State local pour gérer les rourous
+  const [rourous, setRourous] = useState<Post['Reacts']>(initialRourous)
+
+  // s'abonner aux événements de rourous pour ce post
+  const handleRourouEvent = useCallback(
+    (event: { type: RourouEventType; rourou: Post['Reacts'][0] }) => {
+      const { type, rourou } = event
+
+      setRourous((prev) => {
+        switch (type) {
+          case RourouEventType.RourouCreated:
+            // Éviter les doublons si le rourou existe déjà
+            if (prev.some((r) => r.id === rourou.id)) {
+              return prev
+            }
+            // Ajouter le nouveau rourou
+            return [...prev, rourou]
+
+          case RourouEventType.RourouDeleted:
+            // Retirer le rourou supprimé
+            return prev.filter((r) => r.id !== rourou.id)
+
+          case RourouEventType.RourouUpdated:
+            // Mettre à jour le rourou modifié
+            return prev.map((r) => (r.id === rourou.id ? rourou : r))
+
+          default:
+            return prev
+        }
+      })
+    },
+    []
+  )
+
+  useRourouEvents(postId, handleRourouEvent)
 
   const rourouGroups: Record<string, number> = useMemo(() => {
     const groupedRourous = Object.fromEntries(
@@ -99,7 +138,7 @@ const Rourous = ({
   }
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 h-10">
       {!hasNoRourou && (
         <div className="flex gap-2 p-1 border-1 border-solid inset-shadow-sm rounded-full w-fit">
           {ALL_ROUROU_TYPES.map((rourouType) => {
@@ -112,16 +151,17 @@ const Rourous = ({
             return (
               <div
                 key={rourouType}
-                className={`flex items-center gap-2 ${
+                className={cn(
+                  'flex items-center gap-2',
                   isSelected
                     ? 'bg-emerald-950 border border-green-800 p-1 rounded-full'
                     : ''
-                }`}
+                )}
               >
                 <img
-                  src={`./rourou_icons/${rourouType}.png`}
+                  src={`/rourou_icons/${rourouType}.png`}
                   alt={rourouType}
-                  className="h-[1.5em]"
+                  className="size-6 cursor-pointer"
                   onClick={() => handleRourouSelect(rourouType)}
                 />
                 <p className="text-xs">{count}</p>

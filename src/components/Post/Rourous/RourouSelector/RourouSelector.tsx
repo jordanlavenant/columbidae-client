@@ -35,10 +35,10 @@ const RourouSelector = ({ onRourouSelect }: RourouSelectorProps) => {
       </PopoverTrigger>
       <PopoverContent className="flex justify-between gap-1 w-fit">
         {ALL_ROUROU_TYPES.map((rourouType) => (
-          <HoverCard openDelay={200} closeDelay={100}>
+          <HoverCard key={rourouType} openDelay={200} closeDelay={100}>
             <HoverCardTrigger asChild>
               <img
-                src={`./rourou_icons/${rourouType}.png`}
+                src={`/rourou_icons/${rourouType}.png`}
                 alt={FRENCH_ROUROU_LABELS[rourouType]}
                 key={rourouType}
                 className="h-[2em]"

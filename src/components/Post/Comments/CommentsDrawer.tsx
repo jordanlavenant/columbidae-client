@@ -16,9 +16,11 @@ import createComment, {
 } from '@/services/functions/comment/create-comment'
 import type { Post } from '@/services/models/post/post'
 import { MessageCircle } from 'lucide-react'
-import { useState, type FormEvent } from 'react'
+import { useCallback, useState, type FormEvent } from 'react'
 import Comments from './components/Comments'
 import { cn } from '@/lib/utils'
+import { CommentEventType } from '@/services/events/comment/comment-event'
+import { useCommentEvents } from '@/hooks/use-comment-events'
 
 const CommentsDrawer = ({
   className,
@@ -35,6 +37,39 @@ const CommentsDrawer = ({
   // States
   const [comments, setComments] = useState<Post['Comments']>(initialComments)
   const [currComment, setCurrComment] = useState('')
+
+  // s'abonner aux événements de commentaires pour ce post
+  const handleCommentEvent = useCallback(
+    (event: { type: CommentEventType; comment: Post['Comments'][0] }) => {
+      const { type, comment } = event
+
+      setComments((prev) => {
+        switch (type) {
+          case CommentEventType.CommentCreated:
+            // Éviter les doublons si le commentaire existe déjà
+            if (prev.some((c) => c.id === comment.id)) {
+              return prev
+            }
+            // Ajouter le nouveau commentaire au début
+            return [comment, ...prev]
+
+          case CommentEventType.CommentDeleted:
+            // Retirer le commentaire supprimé
+            return prev.filter((c) => c.id !== comment.id)
+
+          case CommentEventType.CommentUpdated:
+            // Mettre à jour le commentaire modifié
+            return prev.map((c) => (c.id === comment.id ? comment : c))
+
+          default:
+            return prev
+        }
+      })
+    },
+    []
+  )
+
+  useCommentEvents(postId, handleCommentEvent)
 
   // Functions
   const handleAddComment = async (e: FormEvent) => {
@@ -55,9 +90,6 @@ const CommentsDrawer = ({
         throw new Error('Erreur lors de la création du commentaire')
       }
 
-      // Update local state with the newly created comment
-      const createdComment = await commentResponse.json()
-      setComments((prev) => [createdComment, ...prev])
       // Clear input
       setCurrComment('')
     } catch (err) {

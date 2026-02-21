@@ -3,6 +3,9 @@ import './App.css'
 import { ThemeProvider } from './components/theme-provider'
 import { AuthProvider } from './hooks/use-auth'
 import { EndpointProvider } from './hooks/use-endpoint'
+import { CommentEventsProvider } from './hooks/use-comment-events'
+import { RourouEventsProvider } from './hooks/use-rourou-events'
+import { PostEventsProvider } from './hooks/use-post-events'
 import Router from './Router'
 
 const App = () => {
@@ -16,8 +19,14 @@ const App = () => {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <EndpointProvider endpoint={ENDPOINT}>
         <AuthProvider>
-          <Toaster position="top-center" />
-          <Router />
+          <PostEventsProvider>
+            <CommentEventsProvider>
+              <RourouEventsProvider>
+                <Toaster position="top-center" />
+                <Router />
+              </RourouEventsProvider>
+            </CommentEventsProvider>
+          </PostEventsProvider>
         </AuthProvider>
       </EndpointProvider>
     </ThemeProvider>

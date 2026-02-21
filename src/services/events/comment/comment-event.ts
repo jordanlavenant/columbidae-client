@@ -1,7 +1,9 @@
 import type { CommentUpdate } from './comment-update'
 
 export enum CommentEventType {
-  CommentUpdate = 'CommentUpdate',
+  CommentCreated = 'CommentCreated',
+  CommentUpdated = 'CommentUpdated',
+  CommentDeleted = 'CommentDeleted',
 }
 
 export type CommentEvent = CommentUpdate | ({ type: 'Error' } & Error)

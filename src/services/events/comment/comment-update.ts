@@ -2,6 +2,6 @@ import type { Post } from '../../models/post/post'
 import type { CommentEventType } from './comment-event'
 
 export type CommentUpdate = {
-  type: CommentEventType.CommentUpdate
+  type: CommentEventType
   comment: Post['Comments'][0]
 }
