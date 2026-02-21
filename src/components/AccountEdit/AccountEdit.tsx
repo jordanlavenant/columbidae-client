@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { User } from '@/services/models/user/user'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { getInitials } from '@/lib/utils'
@@ -9,12 +10,14 @@ import { Label } from '../ui/label'
 import AssetUploader from '../AssetUploader/AssetUploader'
 import { Alert, AlertDescription } from '../ui/alert'
 import { useEndpoint } from '@/hooks/use-endpoint'
-import updateUser from '@/services/functions/user/update-user'
 import createAsset from '@/services/functions/asset/create-asset'
+import createUser from '@/services/functions/user/create-user'
+import updateUser from '@/services/functions/user/update-user'
 import { SquarePen } from 'lucide-react'
 
 const AccountEdit = ({ user }: { user?: User }) => {
   const endpoint = useEndpoint()
+  const navigate = useNavigate()
 
   // Form state
   const [username, setUsername] = useState(user?.username)
@@ -38,7 +41,7 @@ const AccountEdit = ({ user }: { user?: User }) => {
     setSuccess('')
 
     // Validation
-    if (newPassword && !currentPassword) {
+    if (user && newPassword && !currentPassword) {
       setError('Veuillez entrer votre mot de passe actuel pour le changer')
       return
     }
@@ -48,7 +51,7 @@ const AccountEdit = ({ user }: { user?: User }) => {
       return
     }
 
-    if (newPassword && !passwordsMatch) {
+    if (user && newPassword && !passwordsMatch) {
       setError('Les mots de passe ne correspondent pas')
       return
     }
@@ -99,12 +102,36 @@ const AccountEdit = ({ user }: { user?: User }) => {
 
       // Cas où l'utilisateur s'inscrit
       else {
-        // TODO : Requête POST
+        // Vérification de la complétion de tous les champs
+        if (
+          username == undefined ||
+          name == undefined ||
+          email == undefined ||
+          newPassword == undefined
+        ) {
+          throw new Error(
+            'Champs incomplets. Veillez à bien compléter vos informations.'
+          )
+        }
+        const response = await createUser(endpoint, {
+          username,
+          name,
+          email,
+          password: newPassword,
+          avatarId,
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.message || 'Erreur lors de la mise à jour')
+        }
+
+        setSuccess('Profil créé avec succès')
       }
 
       // Recharger la page pour mettre à jour les données
       setTimeout(() => {
-        window.location.reload()
+        user ? window.location.reload() : navigate('/login')
       }, 1500)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue')
@@ -258,7 +285,20 @@ const AccountEdit = ({ user }: { user?: User }) => {
               </div>
             </div>
           ) : (
-            <h2 className="text-lg font-semibold">Mot de passe</h2>
+            <div className="flex flex-col gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="newPassword">Votre mot de passe</Label>
+                <Input
+                  id="newPassword"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  disabled={loading}
+                  placeholder="Minimum 6 caractères"
+                  required
+                />
+              </div>
+            </div>
           )}
         </div>
 
