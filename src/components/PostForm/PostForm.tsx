@@ -83,12 +83,12 @@ const PostForm = () => {
       <AlertDialogTrigger asChild>
         <Button variant="outline" className="hover:cursor-pointer">
           <Plus className="size-4" />
-          Create
+          Créer
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="max-w-2xl">
         <AlertDialogTitle className="mb-4 text-center">
-          Create new post
+          Créer un nouveau post
         </AlertDialogTitle>
         <AlertDialogDescription />
 
@@ -115,7 +115,7 @@ const PostForm = () => {
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isSubmitting}>Annuler</AlertDialogCancel>
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || !content.trim()}
@@ -124,10 +124,10 @@ const PostForm = () => {
             {isSubmitting ? (
               <>
                 <Loader className="w-4 h-4 mr-2 animate-spin" />
-                Création...
+                Publication...
               </>
             ) : (
-              'Create'
+              'Publier'
             )}
           </Button>
         </AlertDialogFooter>
