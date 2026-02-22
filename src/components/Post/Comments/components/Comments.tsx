@@ -26,12 +26,7 @@ const Comments = ({
 
   const handleDeleteComment = async (commentId: string) => {
     try {
-      const response = await deleteComment(endpoint, commentId)
-      if (response.ok) {
-        // TODO: La mise à jour se fera via le système d'événements SSE
-      } else {
-        console.error('Erreur lors de la suppression du commentaire')
-      }
+      await deleteComment(endpoint, commentId)
     } catch (error) {
       console.error('Erreur lors de la suppression du commentaire:', error)
     }

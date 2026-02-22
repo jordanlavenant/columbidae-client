@@ -102,8 +102,14 @@ const CommentsDrawer = ({
 
   return (
     <Drawer>
-      <DrawerTrigger asChild>
-        <MessageCircle className={cn('hover:cursor-pointer', className)} />
+      <DrawerTrigger
+        className={cn(
+          'flex items-center gap-x-2 hover:cursor-pointer',
+          className
+        )}
+      >
+        <MessageCircle />
+        <p className="text-sm">{comments.length}</p>
       </DrawerTrigger>
       <DrawerContent className="border h-[500px] max-w-md mx-auto backdrop-blur-sm bg-background/50">
         <DrawerHeader className="border-b">

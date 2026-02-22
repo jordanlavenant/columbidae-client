@@ -2,17 +2,14 @@ import fetchPosts from '@/services/functions/post/fetch-posts'
 import { useCallback, useEffect, useState } from 'react'
 import { useEndpoint } from '@/hooks/use-endpoint'
 import { usePostEvents } from '@/hooks/use-post-events'
-import { Button } from '../ui/button'
-import { useAuth } from '@/hooks/use-auth'
-import PostForm from '../PostForm/PostForm'
 import type { Post } from '@/services/models/post/post'
 import PostComponent from '../Post/Post'
 import { PostEventType } from '@/services/events/post/post-event'
 import { toast } from 'sonner'
 import { Separator } from '../ui/separator'
+import SkeletonLoading from '../SkeletonLoading/SkeletonLoading'
 
 const Feed = () => {
-  const { logout } = useAuth()
   const ENDPOINT = useEndpoint()
   const [posts, setPosts] = useState<Post[]>([])
 
@@ -53,7 +50,7 @@ const Feed = () => {
 
   return (
     <section className="p-4">
-      {posts.length === 0 && <p>No posts available.</p>}
+      {posts.length === 0 && <SkeletonLoading />}
       <section className="mx-auto max-w-md">
         {posts
           .sort((a, b) => b.createdAt.localeCompare(a.createdAt))

@@ -65,7 +65,7 @@ const LoginForm = () => {
 
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md space-y-4 p-6 border rounded-lg"
+        className="w-full max-w-md space-y-4 p-6 sm:border sm:rounded-lg"
       >
         <h1 className="font-[Alan_Sans] text-2xl font-bold">Connexion</h1>
 

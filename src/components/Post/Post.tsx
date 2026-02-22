@@ -174,10 +174,13 @@ const PostComponent = ({
           postId={post.id}
         />
         {/* Desktop comments */}
-        <MessageCircle
+        <div
+          className="hidden md:flex hover:cursor-pointer items-center gap-x-2"
           onClick={() => navigate(`/p/${post.id}`)}
-          className="hidden md:block hover:cursor-pointer"
-        />
+        >
+          <MessageCircle onClick={() => navigate(`/p/${post.id}`)} />
+          <p className="text-sm">{post.Comments.length}</p>
+        </div>
         {/* Rourous */}
         <Rourous rourous={post.Reacts} postId={post.id} />
       </div>

@@ -16,7 +16,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useEndpoint } from '@/hooks/use-endpoint'
 import { getInitials } from '@/lib/utils'
 import fetchUser from '@/services/functions/user/fetch-user'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
   const { isAuthenticated, currentUser, logout } = useAuth()
@@ -41,23 +41,23 @@ const Header = () => {
   return (
     isAuthenticated && (
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
+        <div className="bg-green-500/20 border-b border-green-600 container mx-auto flex h-14 items-center justify-between px-4">
           {/* Columbidae Logo */}
           <div
-            className="flex gap-2 items-center"
+            className="flex gap-2 items-center hover:cursor-pointer"
             onClick={() => navigate('/')}
           >
             <img
-              src="./columbidae_logo_app.svg"
+              src="/columbidae_logo_app.svg"
               alt="Columbidae Logo"
-              className="h-[3em]"
+              className="h-[2.5em]"
             />
             <h1 className="font-[Alan_Sans] font-extrabold text-3xl">
               Columbidae
             </h1>
           </div>
 
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-4 items-center">
             {/* Create Post command */}
             <PostForm />
 
@@ -65,13 +65,13 @@ const Header = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar className="size-8">
+                  <Avatar className="size-10 hover:cursor-pointer">
                     <AvatarImage
                       src={userAvatarURL}
                       alt={userName}
                       className="object-cover"
                     />
-                    <AvatarFallback className="text-md font-mono">
+                    <AvatarFallback className="text-md font-mono border">
                       {userName && getInitials(userName)}
                     </AvatarFallback>
                   </Avatar>
@@ -86,6 +86,7 @@ const Header = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem
+                    className="hover:cursor-pointer"
                     onClick={() => navigate(`/${currentUser?.username}`)}
                   >
                     <CircleUserRound />
@@ -94,7 +95,11 @@ const Header = () => {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem variant="destructive" onClick={logout}>
+                  <DropdownMenuItem
+                    className="hover:cursor-pointer"
+                    variant="destructive"
+                    onClick={logout}
+                  >
                     <LogOutIcon />
                     Se déconnecter
                   </DropdownMenuItem>

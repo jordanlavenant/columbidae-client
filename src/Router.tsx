@@ -7,13 +7,13 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import { useAuth } from './hooks/use-auth'
 import AccountEditPage from './pages/AccountEditPage'
+import SkeletonLoading from './components/SkeletonLoading/SkeletonLoading'
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth()
 
   if (isLoading) {
-    // TODO: skeleton loader
-    return <div>Loading...</div>
+    return <SkeletonLoading />
   }
 
   if (!isAuthenticated) {
