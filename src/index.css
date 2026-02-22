@@ -1,5 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Alan+Sans:wght@300..900&family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -116,5 +117,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Libre Franklin', sans-serif;
   }
 }
