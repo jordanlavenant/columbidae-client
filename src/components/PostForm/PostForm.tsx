@@ -16,10 +16,13 @@ import { useAuth } from '@/hooks/use-auth'
 import type { CreatePostPayload } from '@/services/functions/post/create-post'
 import createPost from '@/services/functions/post/create-post'
 import createAsset from '@/services/functions/asset/create-asset'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 const PostForm = () => {
-  const endpoint = useEndpoint()
   const { currentUser } = useAuth()
+  const endpoint = useEndpoint()
+  const isMobile = useIsMobile()
+
   const [content, setContent] = useState('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -83,7 +86,7 @@ const PostForm = () => {
       <AlertDialogTrigger asChild>
         <Button variant="outline" className="hover:cursor-pointer">
           <Plus className="size-4" />
-          Créer
+          {!isMobile && 'Créer'}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="max-w-2xl">
