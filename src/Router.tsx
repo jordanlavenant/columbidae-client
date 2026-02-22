@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import FeedPage from './pages/FeedPage'
 import UserPage from './pages/UserPage'
 import PostPage from './pages/PostPage'
@@ -25,55 +25,53 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
 
 const Router = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Feed page */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <FeedPage />
-            </ProtectedRoute>
-          }
-        />
+    <Routes>
+      {/* Feed page */}
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <FeedPage />
+          </ProtectedRoute>
+        }
+      />
 
-        {/* Login page */}
-        <Route path="/login" element={<LoginPage />} />
+      {/* Login page */}
+      <Route path="/login" element={<LoginPage />} />
 
-        {/* Register page */}
-        <Route path="/register" element={<RegisterPage />} />
+      {/* Register page */}
+      <Route path="/register" element={<RegisterPage />} />
 
-        {/* User page */}
-        <Route
-          path="/:username/"
-          element={
-            <ProtectedRoute>
-              <UserPage />
-            </ProtectedRoute>
-          }
-        />
+      {/* User page */}
+      <Route
+        path="/:username/"
+        element={
+          <ProtectedRoute>
+            <UserPage />
+          </ProtectedRoute>
+        }
+      />
 
-        {/* Account edit */}
-        <Route
-          path="/account/edit"
-          element={
-            <ProtectedRoute>
-              <AccountEditPage />
-            </ProtectedRoute>
-          }
-        />
+      {/* Account edit */}
+      <Route
+        path="/account/edit"
+        element={
+          <ProtectedRoute>
+            <AccountEditPage />
+          </ProtectedRoute>
+        }
+      />
 
-        {/* Post page */}
-        <Route
-          path="/p/:id/"
-          element={
-            <ProtectedRoute>
-              <PostPage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+      {/* Post page */}
+      <Route
+        path="/p/:id/"
+        element={
+          <ProtectedRoute>
+            <PostPage />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   )
 }
 

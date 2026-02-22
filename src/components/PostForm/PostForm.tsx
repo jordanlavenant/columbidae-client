@@ -16,10 +16,13 @@ import { useAuth } from '@/hooks/use-auth'
 import type { CreatePostPayload } from '@/services/functions/post/create-post'
 import createPost from '@/services/functions/post/create-post'
 import createAsset from '@/services/functions/asset/create-asset'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 const PostForm = () => {
-  const endpoint = useEndpoint()
   const { currentUser } = useAuth()
+  const endpoint = useEndpoint()
+  const isMobile = useIsMobile()
+
   const [content, setContent] = useState('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -83,12 +86,12 @@ const PostForm = () => {
       <AlertDialogTrigger asChild>
         <Button variant="outline" className="hover:cursor-pointer">
           <Plus className="size-4" />
-          Create
+          {!isMobile && 'Créer'}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="max-w-2xl">
         <AlertDialogTitle className="mb-4 text-center">
-          Create new post
+          Créer un nouveau post
         </AlertDialogTitle>
         <AlertDialogDescription />
 
@@ -115,7 +118,7 @@ const PostForm = () => {
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isSubmitting}>Annuler</AlertDialogCancel>
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || !content.trim()}
@@ -124,10 +127,10 @@ const PostForm = () => {
             {isSubmitting ? (
               <>
                 <Loader className="w-4 h-4 mr-2 animate-spin" />
-                Création...
+                Publication...
               </>
             ) : (
-              'Create'
+              'Publier'
             )}
           </Button>
         </AlertDialogFooter>

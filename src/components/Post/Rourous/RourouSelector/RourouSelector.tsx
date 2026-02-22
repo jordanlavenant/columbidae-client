@@ -28,7 +28,7 @@ const RourouSelector = ({ onRourouSelect }: RourouSelectorProps) => {
   return (
     <Popover
       open={isRourouSelectorOpen}
-      onOpenChange={() => setIsRourouSelectorOpen(true)}
+      onOpenChange={() => setIsRourouSelectorOpen(!isRourouSelectorOpen)}
     >
       <PopoverTrigger asChild>
         <CirclePlus className="hover:cursor-pointer" />

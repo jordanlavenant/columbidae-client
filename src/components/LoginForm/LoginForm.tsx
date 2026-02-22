@@ -37,12 +37,37 @@ const LoginForm = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex md:flex-row flex-col maxitems-stretch gap-6 mb-8">
+        <div className="flex md:items-center justify-center order-last md:order-first">
+          <img
+            src="./columbidae_welcoming_rourou.png"
+            alt="Columbidae Welcoming Rourou"
+            className="h-[10em] object-contain"
+          />
+        </div>
+
+        <div className="flex flex-col justify-center items-center h-[10em]">
+          <p className="text-lg">Bienvenue sur</p>
+
+          <div className="flex gap-2 items-center">
+            <img
+              src="./columbidae_logo_app.svg"
+              alt="Columbidae Logo"
+              className="h-[3em]"
+            />
+            <p className="font-[Alan_Sans] font-extrabold text-4xl">
+              Columbidae
+            </p>
+          </div>
+        </div>
+      </div>
+
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md space-y-4 p-6 border rounded-lg"
       >
-        <h1 className="text-2xl font-bold">Login</h1>
+        <h1 className="font-[Alan_Sans] text-2xl font-bold">Connexion</h1>
 
         {error && (
           <div className="text-red-600 text-sm bg-red-50 p-3 rounded">
@@ -67,12 +92,12 @@ const LoginForm = () => {
 
         <div className="space-y-2">
           <label htmlFor="password" className="text-sm font-medium">
-            Password
+            Mot de passe
           </label>
           <Input
             id="password"
             type="password"
-            placeholder="Enter your password"
+            placeholder="Entrer le mot de passe"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -81,18 +106,18 @@ const LoginForm = () => {
         </div>
 
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? 'Authentification...' : 'Se connecter'}
         </Button>
 
         <div className="flex justify-center items-center gap-2">
-          <p className="text-sm text-center">Don't have an account ?</p>
+          <p className="text-sm text-center">Pas encore de compte ?</p>
           <Button
             variant="link"
             type="button"
             className="text-blue-600 hover:cursor-pointer p-1"
             onClick={() => navigate('/register')}
           >
-            Register
+            S'inscrire
           </Button>
         </div>
       </form>

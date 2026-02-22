@@ -1,5 +1,6 @@
 import { Toaster } from 'sonner'
 import './App.css'
+import Header from './components/Header/Header'
 import { ThemeProvider } from './components/theme-provider'
 import { AuthProvider } from './hooks/use-auth'
 import { EndpointProvider } from './hooks/use-endpoint'
@@ -22,8 +23,14 @@ const App = () => {
           <PostEventsProvider>
             <CommentEventsProvider>
               <RourouEventsProvider>
-                <Toaster position="top-center" />
-                <Router />
+                <div className="min-h-screen flex flex-col">
+                  <Header />
+
+                  <main className="flex-1">
+                    <Toaster position="top-center" />
+                    <Router />
+                  </main>
+                </div>
               </RourouEventsProvider>
             </CommentEventsProvider>
           </PostEventsProvider>
