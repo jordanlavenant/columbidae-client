@@ -53,12 +53,6 @@ const Feed = () => {
 
   return (
     <section className="p-4">
-      <section className="flex justify-between mb-4">
-        <PostForm />
-        <Button variant="destructive" onClick={logout}>
-          Disconnect
-        </Button>
-      </section>
       {posts.length === 0 && <p>No posts available.</p>}
       <section className="mx-auto max-w-md">
         {posts
