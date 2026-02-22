@@ -37,12 +37,37 @@ const LoginForm = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex md:flex-row flex-col maxitems-stretch gap-6 mb-8">
+        <div className="flex md:items-center justify-center order-last md:order-first">
+          <img
+            src="./columbidae_welcoming_rourou.png"
+            alt="Columbidae Welcoming Rourou"
+            className="h-[10em] object-contain"
+          />
+        </div>
+
+        <div className="flex flex-col justify-center items-center h-[10em]">
+          <p className="text-lg">Bienvenue sur</p>
+
+          <div className="flex gap-2 items-center">
+            <img
+              src="./columbidae_logo_app.svg"
+              alt="Columbidae Logo"
+              className="h-[3em]"
+            />
+            <p className="font-[Alan_Sans] font-extrabold text-4xl">
+              Columbidae
+            </p>
+          </div>
+        </div>
+      </div>
+
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md space-y-4 p-6 border rounded-lg"
       >
-        <h1 className="text-2xl font-bold">Connexion</h1>
+        <h1 className="font-[Alan_Sans] text-2xl font-bold">Connexion</h1>
 
         {error && (
           <div className="text-red-600 text-sm bg-red-50 p-3 rounded">
